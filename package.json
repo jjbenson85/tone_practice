@@ -28,6 +28,7 @@
   "dependencies": {
     "copy-webpack-plugin": "^5.0.0",
     "dotenv-webpack": "^1.7.0",
+    "nexusui": "^2.0.9",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-router-dom": "^4.3.1",

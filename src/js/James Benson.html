@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///Users/jj/development/jjbenson85.github.io/index.html -->
+<html lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="theme-color" content="#317EFB">
+   <meta name="Description" content="James Benson web developer portfolio">
+  <script src="file:///Users/jj/development/jjbenson85.github.io/app.js" charset="utf-8"></script>
+  <link href="./James Benson_files/css" rel="stylesheet">
+  <link rel="stylesheet" href="file:///Users/jj/development/jjbenson85.github.io/style.css">
+  <title>James Benson</title>
+</head>
+<body onresize="windowResize()">
+  <header>
+    <div id="burger" onclick="burgerToggle()">X</div>
+    
+    <nav class="navbar-tablet">
+      <div class="nav-item" onclick="handleScroll(&#39;#about&#39;)">about</div>
+      <div class="nav-item" onclick="handleScroll(&#39;#skills&#39;)">skills</div>
+      <div class="nav-item" onclick="handleScroll(&#39;#experience&#39;)">experience</div>
+      <div class="nav-item" onclick="handleScroll(&#39;#education&#39;)">education</div>
+      <div class="nav-item" onclick="handleScroll(&#39;#projects&#39;)">projects</div>
+      <div class="nav-item" onclick="handleScroll(&#39;#contact&#39;)">contact</div></nav>
+    <nav class="navbar">
+      <div id="indicator" style="left: 0px; width: 149px;"></div><div class="nav-top" style="
+    top: -40px;
+    position: relative;
+">
+        <div class="nav-item" onclick="handleScroll(&#39;#about&#39;)">about</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#skills&#39;)">skills</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#experience&#39;)">experience</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#education&#39;)">education</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#projects&#39;)">projects</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#contact&#39;)">contact</div>
+      </div>
+      <div id="nav-projects" class="nav-bottom hidden">
+        <div class="nav-item" onclick="handleScroll(&#39;#project1&#39;)">Project 1</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#project2&#39;)">Project 2</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#project3&#39;)">Project 3</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#project4&#39;)">Project 4</div>
+      </div>
+      <div id="nav-experience" class="nav-bottom hidden">
+        <div class="nav-item" onclick="handleScroll(&#39;#experience1&#39;)">GA</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#experience2&#39;)">Micropower</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#experience3&#39;)">Sound</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#experience4&#39;)">Microsoft</div>
+      </div>
+      <div id="nav-education" class="nav-bottom hidden">
+        <div class="nav-item" onclick="handleScroll(&#39;#education1&#39;)">GA</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#education2&#39;)">NFTS</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#education3&#39;)">University</div>
+      </div>
+      <div id="nav-skills" class="nav-bottom hidden">
+        <div class="nav-item" onclick="handleScroll(&#39;#tech-skills&#39;)">Technical</div>
+        <div class="nav-item" onclick="handleScroll(&#39;#soft-skills&#39;)">Soft</div>
+      </div>
+    </nav>
+
+  </header>
+  <main>
+    <div class="bg-holder" style="left: 0px;">
+      <div class="bg"></div>
+    </div>
+    <div class="scroll">
+      <section id="about">
+        <div class="container">
+          <h2>
+            <span class="ul-1">About</span>
+          </h2>
+          <div class="content">
+            <h3>
+              Web developer | London
+            </h3>
+            <div>
+              <p>I have recently finished a Web Development Immersive course at General Assembly London. It was an intensive 12 week course the took me from a beginner in HTML and JavaScript, to deploying Full-Stack applications built with tools such as React, MongoDB, Express and Node.js. The pace of new topics and content was fierce but I found it to be one of the most rewarding experiences of my life.</p>
+
+              <p>Previously, I worked for Micro-Power Electronics Ltd., a small electronics company that creates equipment for the power industry. I was tasked with creating a dashboard to show data from industrial sensors. Through my own learning and internal assistance, I was able to gain the skills necessary to integrate the data and create client side visualisations. I discovered I really enjoyed working in JavaScript and learning web technologies. This created a desire to formalise my training as a full stack developer and why I joined General Assembly.</p>
+
+              <p>I am looking for a workplace that can provide me with challenges and surround me with experienced colleagues who I can learn from. I want to be able to progress as a developer by learning new skills and by being given greater responsibilities.</p>
+
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="join"></div>
+      <section id="skills">
+        <div class="container">
+          <h2><span class="ul-2">Skills</span></h2>
+          <div class="side-scroll-container">
+            <div id="tech-skills" class="side-scroll">
+              <div class="content">
+                <h3>Technical Skills</h3>
+                <p>Web Technologies &amp; Frameworks: React, HTML5, CSS3.0, </p>
+                <p>Scripts/UI: JavaScript, JQuery, AJAX, Bulma, BootStrap</p>
+                <p>Database and ORM: MongoDB, Mongoose</p>
+                <p>Web Debug Tools: Chrome developer tools, React developer tools</p>
+                <p>Application/Web Server: Webpack?</p>
+                <p>Versioning and other tools: Git,</p>
+                <p>Deployment Tools: Heroku</p>
+              </div>
+            </div>
+            <div id="soft-skills" class="side-scroll">
+              <div class="content">
+                <h3>Soft Skills:</h3>
+
+                <h3>Communication &amp; Teamwork</h3>
+                <p>Respect, Empathy, Listening, Conflict Management, Cooperation, Negotiating</p>
+
+                <button onclick="toggleHidden(&#39;#communicationTeamwork&#39;)">Example:</button>
+                <p id="communicationTeamwork" class="hidden">When working on a group project at General Assembly, I found that members of the team wanted different levels of face to face communication, with some team members disturbing others whilst they were working hard and trying to concentrate. I opened a dialog to resolve the conflict, and by listening to everyone in the group with respect and empathy we came to a solution; regular scheduled meetings, so that people could feel included in the team but also allow those that needed their own space to thrive. This led to a much happier and more productive environment.</p>
+
+                <h3>Adaptability, Problem Solving &amp; Creativity</h3>
+                <p>self-motivation,  self-learning, persistence</p>
+
+                <button onclick="toggleHidden(&#39;#adaptability&#39;)">Example:</button>
+                <p id="adaptability" class="hidden">Micro-Power Electronics creates electronic sensors for the power industry and was commissioned to create a device to collect sensor data and run an internal web server so that they could be configured and their internal logs be downloaded from a web browser. I researched online and followed tutorials to learn the basics of HTML and JavaScript and how to incorporate them into an embedded C project on the device’s PIC32 microcontroller. This self-motivation was crucial as during the project, I was often working on my own and would frequently hit problems. Through persistence, experimentation and, importantly, asking for help I was able to overcome these issues. The end result was a product that exceeded the clients expectations and changed the project from a system tool, to a product that can be used to generate customers.</p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="join"></div>
+      <section id="experience">
+        <div class="container">
+          <h2><span class="ul-3">Experience</span></h2>
+          <div class="side-scroll-container">
+            <div id="experience1" class="side-scroll">
+              <div class="content">
+                <h3>General Assembly</h3>
+                <h4>Student General Assembly (Nov 2018 - March 2019)</h4>
+                <p>Web development immersive course, a full time 12-week course that covered best practices and industry standards in programming fundamentals, product development basics, front-end development, back-end web development and team collaboration strategies.
+                </p>
+              </div>
+            </div>
+            <div id="experience2" class="side-scroll">
+              <div class="content">
+                <h3>Software Developer,</h3>
+                <h4>Micro-Power Electronics Ltd., London (Jan/2016–November/2018)</h4>
+                <p>Micro-Power electronics produce fault detection and sensor control units for the power industry.
+                  Duties entail creating circuit board layouts from circuit designs in Easy-PC,  using the MPLAB X IDE to program PIC microcontrollers in C, and assembling, testing and calibrating electronic devices.
+                </p>
+              </div>
+            </div>
+            <div id="experience3" class="side-scroll">
+              <div class="content">
+                <h3>Boom Operator</h3>
+                <h4>Various, London (Jan/2013–November/2016)</h4>
+                <p>I worked on feature films and TV shows such as Poirot, Pokemon: Detective Pikachu, and Game of Thrones.</p>
+                <p>I would have to physically hold microphones above actors on set, hide microphones in actors clothing and control all unwanted external noise. I would often interact with other departments to ensure the best audio recordings possible.
+                </p>
+
+                <h3>Sound Recordist</h3>
+                <h4>Various , London(July/2009 - August/2011)</h4>
+                <p>Before attending film school I worked on many short and low budget feature films.
+                  I had to be the sole representative of the sound department and ensure good quality audio recordings.
+                </p>
+              </div>
+            </div>
+            <div id="experience4" class="side-scroll">
+              <div class="content">
+                <h3>Web Producer</h3>
+                <h4>Microsoft, London (July/2008–July/2009)</h4>
+                <p>I worked for MSN, the Microsoft web portal that provides News, Sport and Entertainment news.
+                  created custom web-page layouts using an in-house content management system to put editorial content onto the web. I also recorded podcasts and filmed interviews.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="join"></div>
+      <section id="education">
+        <div class="container">
+          <h2><span class="ul-4">Education</span></h2>
+          <div class="side-scroll-container">
+            <div id="education1" class="side-scroll">
+              <div class="content">
+                <h3>GENERAL ASSEMBLY, London, (November/2018–March/2019)</h3>
+                <h4>Web Development Immersive.</h4>
+                <p>See here!</p>
+              </div>
+            </div>
+            <div id="education2" class="side-scroll">
+              <div class="content">
+                <h3>NATIONAL FILM &amp; TELEVISION SCHOOL, (September/2011–Jan/2013)</h3>
+                <h4>Post-Graduate Diploma - Sound Recording for Film and Television.</h4>
+                <p>This was a full time course that lasted for 15 months. I learnt how to record sound on set for scripted TV shows, as well as documentaries and live television. During my time I worked on two graduation films and various other short films and was given access to industry professionals which eventually lead to my career in the film business.</p>
+              </div>
+            </div>
+            <div id="education3" class="side-scroll">
+              <div class="content">
+                <h3>UNIVERSITY OF HERTFORDSHIRE, (September/2005–July/2008)</h3>
+                <h4>BA 1st Class Honours - Sound Design Technology.</h4>
+                <p>This course combined music technology with some sound design and computing. As well as learning acoustics and other audio related topics, we also learnt Flash and Director. These programs were an introduction to coding and first sparked my interest in coding as a potential career.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="join"></div>
+      <section id="projects">
+        <div class="container">
+          <h2><span class="ul-5">Projects</span></h2>
+          <!-- <nav>JamDex Pepino  Health & Tasty Nocturn<nav> -->
+          <div class="side-scroll-container">
+            <div id="project1" class="side-scroll">
+              <div class="content">
+                <div class="flex row">
+                  <h3>Project-04 - JamDex</h3>
+                  <a href="http://github.com/jjbenson85/jamdex" target="_blank" rel="noreferrer">Github: github.com/jjbenson85/jamdex</a>
+                  <a href="https://jamdex.herokuapp.com/" target="_blank" rel="noreferrer">Live Site: https://jamdex.herokuapp.com/</a>
+                </div>
+                <p>HTML - CSS - JavaScript - React - Python - PostgreSQL - Flask - SQLAlchemy - Marshmallow - Enzyme - Mocha - Chai - Node.js</p>
+                <p><span>Time:  7 Days</span>
+                  <span>Team Size: 2 - Pair Project</span></p>
+
+                  <p>Brief: Create a Python/PostgreSQL backend and a React frontend with some unit testing.</p>
+                  <p>Description: JamDex is an online music creation and sharing tool built using the Tone.js JavaScript library, React, PostgreSQL and Python.</p>
+
+                  <p>It was created by myself, JAMes Benson and DEXter De Leon. Not only is it a nice portmanteau of our names, it is also a literal index of jams!</p>
+
+                  <p>Using two instruments, a synthesizer and drum-machine, users can create single four beat bar loops we call Jams. These Jams can then be ‘recorded’ to tape and shared with others.</p>
+
+                  <!-- <p>I was responsible for the creation of the instrument components using Tone.js and the control system for sending information from the interfaces to the sound engines. I setup the database models and schema as well as the RESTful routes. Using Enzyme, Mocha and Chai I created tests for the front end and did some of the styling of the instruments.</p>
+
+                  <p>We started the project by firstly making some sound with Tone.js. Then getting Tone instruments built into react components, and making sure they can be synchronized. We then created simple ‘Alpha’ interfaces and the backend to save the pitch and velocity data. As we created ‘Beta’ interfaces, new models were created to handle extra functionality, such as synthesizer settings, and extra voices for the drum machine. We then created final interfaces and styled the whole site.</p> -->
+              </div>
+            </div>
+            <div id="project2" class="side-scroll">
+              Project-03 - Pepino
+              HTML - CSS - JavaScript - React - NPMS API - MongoDB - Mongoose - Express - Mocha - Chai
+              Github: github.com/jjbenson85/pepino
+              Live Site: https://pepino-wdi.herokuapp.com/
+              Time: 7 days
+              Team Size: 3 - Group Project
+              Brief: Create a MERN stack application with testing for restful CRUD routes.
+              Description: Pepino is a tool to help Node developers discover new node packages. With integrated search of the NPM library using keywords, users are able to see the description and usage statistics of node packages. Users can create representations of their node projects, add their current node packages to it and comment on the packages or other projects.
+
+              The project had three models and we were each able to experience the backend, testing and front end for our own model. I was responsible for creating the Packages model and schema for the database, and their RESTful routes. I also created the packages Index and Show pages on the website, and am responsible for the colour choice and overall styling.
+
+            </div>
+            <div id="project3" class="side-scroll">
+              Project-02 - Health &amp; Tasty
+              HTML - CSS - JavaScript - React - APIs.
+              Github: github.com/jjbenson85/WDI-Project-02
+              Live Site: health-and-tasty.herokuapp.com
+              Time: 1 day
+              Team Size: 2 - Pair project
+              Brief: Build a React front-end to consume an external API in 24 hours.
+              Description: Health &amp; Tasty was the result of a 24 hour React Hackathon and was co-created and pair coded with Edward Lea. Health &amp; Tasty uses the Zomato restaurant API and food standards agency’s API to show the hygiene rating of nearby restaurants. Restaurant locations are plotted on a map of the users surrounding area using Mapbox-gl.
+
+            </div>
+            <div id="project4" class="side-scroll">
+              Project-01 - Nocturn
+              HTML - CSS - JavaScript - jQuery game.
+              Github: github.com/jjbenson85/WDI-Project-01
+              Live Site: jjbenson85.github.io/WDI-Project-01
+              Time: 7 days
+              Team Size: 1 - Solo project
+              Brief: Build a grid based game using JavaScript.
+              Description: Nocturn is loosely based on the classic board game Reversi/Othello. Players take turns to change a neutral cube to their colour. If they manage to bookend a line of their opponents pieces, the pieces are captured and change to the players colour.
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <div class="join"></div>
+      <section id="contact">
+        <div class="container">
+          <h2><span class="ul-6">Contact</span></h2>
+          <div>
+            <div class="content">
+              <p>Email: <email>jjbenson85@gmail.com</email></p>
+              <tel></tel>
+              <p>GitHub: <a href="https://github.com/jjbenson85" target="_blank" rel="noreferrer">https://github.com/jjbenson85</a></p>
+              <p>LinkedIn: <a href="https://www.linkedin.com/in/jjbenson/" target="_blank" rel="noreferrer">https://www.linkedin.com/in/jjbenson/</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+  let tablet = false;
+  tablet = (screen.width <= 768)
+
+  function showBottomNav(example){
+    var bottomNavs = document.querySelectorAll('.nav-bottom')
+    bottomNavs.forEach(elem => elem.classList.add('hidden'))
+    example && document.querySelector(example).classList.remove('hidden')
+  }
+
+  function toggleHidden(example){
+    console.log(example)
+    elem = document.querySelector(example)
+    elem.classList.toggle('hidden')
+  }
+
+  function handleScroll(section){
+    console.log('section', section)
+    element = document.querySelector(section)
+    element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+  }
+
+  let isTicking
+  const debounce = (callback, evt) => {
+    if (isTicking) return
+    requestAnimationFrame(() => {
+      callback(evt);
+      isTicking = false
+    })
+    isTicking = true
+  }
+  const scroller = document.querySelector('.scroll')
+  // listen for scroll event and call animate function
+  scroller.addEventListener("scroll", (e)=>debounce(animate,e));
+
+  const bgHolder = document.querySelector('.bg-holder')
+  // bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, red, red 20px, black 20px, black 40px)"
+
+  // bgHolder.style.backgroundImage = 'linear-gradient(#000000, #ffffff)'
+  const aboutSection = document.querySelector('#about')
+  const projectsSection = document.querySelector('#projects')
+  const skillsSection = document.querySelector('#skills')
+  const experienceSection = document.querySelector('#experience')
+  const educationSection = document.querySelector('#education')
+  const indicator = document.querySelector('#indicator')
+  const navbar = document.querySelector('.navbar')
+  const navbarTablet = document.querySelector('.navbar-tablet')
+  let indicatorTrack = (navbar.offsetWidth - indicator.clientWidth)/100
+  console.log('indicator.offsetWidth',indicator.clientWidth)
+  const numberOfPics = 5
+
+  let bgTrack = ((numberOfPics*window.innerWidth)/100)
+
+  function windowResize(){
+    indicator.style.width = (navbar.offsetWidth/6)+"px"
+    indicatorTrack = (navbar.offsetWidth - indicator.clientWidth)/100
+    animate()
+  }
+
+  function burgerToggle(){
+    navbarTablet.classList.toggle('active')
+  }
+  // if(tablet){
+  //   bgTrack = ((numberOfPics*window.innerHeight)/100)
+  // }
+
+  // indicator.onmousedown = moveIndicator
+  // let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  // function moveIndicator(e){
+  //   e = e || window.event
+  //   e.preventDefault()
+  //
+  //   pos3 = e.clientX;
+  //   // pos4 = e.clientY;
+  //   document.onmouseup = closeDragElement;
+  //   document.onmousemove = elementDrag;
+  //   console.log("indicator", e.clientX)
+  //   indicator.style.left = e.clientX
+  // }
+  //
+  // function windowResize(){
+  //   bgTrack = ((numberOfPics*window.innerWidth)/100)
+  // }
+  //
+  // function elementDrag(e){
+  //   e = e || window.event
+  //   e.preventDefault()
+  //   pos1 = pos3 - e.clientX;
+  //   // pos2 = pos4 - e.clientY;
+  //   pos3 = e.clientX;
+  //   // pos4 = e.clientY;
+  //   // indicator.style.top = (indicator.offsetTop - pos2) + "px"
+  //   indicator.style.left = (indicator.offsetLeft - pos1) + "px"
+  //   scroller.scrollTop -= pos1*10;
+  //
+  //   console.log('drag', pos1*20, scroller.scrollTop )
+  //
+  // }
+  //
+  // function closeDragElement(){
+  //   console.log('close')
+  //   document.onmouseup = null;
+  //   document.onmousemove = null;
+  // }
+
+  // check if element is in view
+  function inView(element, scrollY) {
+    // get window height
+    // var windowHeight = scroller.scrollHeight;
+    // get number of pixels that the document is scrolled
+    // get current scroll position (distance from the top of the page to the bottom of the current viewport)
+    var elementPosition = element.getBoundingClientRect().top + scrollY;
+    // console.log('check', windowHeight, scrollY, Math.floor(elementPosition))
+
+    // is scroll position greater than element position? (is element in view?)
+    return (scrollY >= Math.floor(elementPosition - 150) && scrollY < Math.floor(elementPosition + 150) )
+
+  }
+  // animate element when it is in view
+  function animate() {
+    const scrollY = scroller.scrollTop || 0
+    scrollPercent = scrollY/(scroller.scrollHeight-window.innerHeight)*100
+    // if (tablet) {
+    //
+    //
+    //
+    //   return
+    // }
+
+    indicatorLeft = indicatorTrack * scrollPercent
+    indicator.style.left = indicatorLeft+"px"
+
+    bgMove = bgTrack * scrollPercent
+    bgHolder.style.left = -bgMove+"px"
+
+    showBottomNav()
+    // if(inView(aboutSection, scrollY)){
+    //   bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, red, red 20px, black 20px, black 40px)"
+    //  }
+    if(inView(projectsSection, scrollY)){
+      showBottomNav('#nav-projects')
+      // bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, red, red 20px, black 20px, black 40px)"
+     }
+    if(inView(skillsSection, scrollY)){
+      showBottomNav('#nav-skills')
+      // bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, yellow, yellow 20px, black 20px, black 40px)"
+     }
+    if(inView(experienceSection, scrollY)){
+      showBottomNav('#nav-experience')
+      // bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, green, green 20px, black 20px, black 40px)"
+     }
+    if(inView(educationSection, scrollY)){
+      showBottomNav('#nav-education')
+      // bgHolder.style.backgroundImage = "repeating-linear-gradient(45deg, blue, blue 20px, black 20px, black 40px)"
+     }
+  }
+
+  </script>
+
+
+</body></html>

@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import Tone from 'tone'
 
 import Monosynth from './components/Monosynth'
+import GridSequencer from './components/GridSequencer'
 
 import './scss/style.scss'
 
@@ -100,13 +101,12 @@ class App extends React.Component {
               beat: 15,
               pitch: 'C3',
               duration: '32n'
-            },
-            {
-              beat: 16,
-              pitch: 'B2',
-              duration: '32n'
             }
-          ]
+          ],
+          settings:{
+
+          }
+
         },{
           id: 1,
           sequence: [
@@ -225,18 +225,23 @@ class App extends React.Component {
       <div>Hello World!
         <button onClick={()=>this.playSound()}>PLAY</button>
         <button onClick={()=>this.stopSound()}>STOP</button>
-        <Monosynth
-          id="1"
-          time={this.state.transport.time}
-          pitch={this.state.instrument[0].sequence[this.state.transport.beat].pitch}
-          duration={this.state.instrument[0].sequence[this.state.transport.beat].duration}
-        />
-        <Monosynth
-          id="2"
-          time={this.state.transport.time}
-          pitch={this.state.instrument[1].sequence[this.state.transport.beat].pitch}
-          duration={this.state.instrument[1].sequence[this.state.transport.beat].duration}
-        />
+        <div>
+          <Monosynth
+            id="1"
+            time={this.state.transport.time}
+            pitch={this.state.instrument[0].sequence[this.state.transport.beat].pitch}
+            duration={this.state.instrument[0].sequence[this.state.transport.beat].duration}
+          />
+
+
+          <Monosynth
+            id="2"
+            time={this.state.transport.time}
+            pitch={this.state.instrument[1].sequence[this.state.transport.beat].pitch}
+            duration={this.state.instrument[1].sequence[this.state.transport.beat].duration}
+          />
+        </div>
+
       </div>
     )
   }
