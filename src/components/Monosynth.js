@@ -13,82 +13,98 @@ class Monosynth extends React.Component {
         {
           beat: 0,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 1,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 2,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 3,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 4,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 5,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 6,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 7,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 8,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 9,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 10,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 11,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 12,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 13,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 14,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         },
         {
           beat: 15,
           pitch: 64,
-          duration: '16n'
+          velocity: 1,
+          duration: '32n'
         }
       ],
       settings: {
@@ -118,116 +134,19 @@ class Monosynth extends React.Component {
         }
       }
     }
-
-
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleRadioButtonChange = this.handleRadioButtonChange.bind(this)
   }
 
-  componentDidUpdate(){
-    // const envelope = () => {
-    //   const {attack, decay, sustain, release } = this.state.envelope
-    //   const env = this.synth.envelope
-    //   env.attack = attack
-    //   env.decay = decay
-    //   env.sustain = sustain
-    //   env.release = release
-    // }
-    //
-    // const filterEnvelope= () => {
-    //   const {attack, decay, sustain, release } = this.state.filterEnvelope
-    //   const env = this.synth.envelope
-    //   env.attack = attack
-    //   env.decay = decay
-    //   env.sustain = sustain
-    //   env.release = release
-    // }
-    //
-    // envelope()
-    // filterEnvelope()
-    //
-    // this.synth.filterEnvelope.baseFrequency = this.state.filterEnvelope.baseFrequency
-
-    // this.synth.triggerAttackRelease(this.state.currentSequence.pitch, this.state.currentSequence.duration, this.state.transport.time)
-  }
-
   handleControlChange(val, mod){
-    // mod = mod.split('.')
-    //
-    // const partA = mod[0]
-    // const partB = mod[1]
-
     const [partA, partB] = mod.split('.')
-    console.log(partA, partB, val, this.synth)
     this.synth[partA][partB] = val
     const settings = {...this.state.settings}
     settings[partA][partB] = val
     this.setState({settings})
-    // switch(mod[0]){
-    //   case 'envelope':
-    //     console.log(mod)
-    //     break
-    //
-    // }
-    //
-    // // this.synth[mod[0]][mod[1]] = val
-    //
-    // let oscillator = {...this.state.oscillator}
-    // let envelope = {...this.state.envelope}
-    // let filterEnvelope = {...this.state.filterEnvelope}
-    // let filter = {...this.state.filter}
-    //
-    // // if(mod[0]==='oscillator'){
-    // //   oscillator = {...this.state.oscillator, [mod[1]]: val}
-    // // }else if(mod[0]==='envelope'){
-    // //   envelope = {...this.state.envelope, [mod[1]]: val}
-    // // }
-    // switch(mod[0]){
-    //   case 'oscillator':
-    //     oscillator = {...this.state.oscillator, [mod[1]]: val}
-    //     break
-    //
-    //   case 'envelope':
-    //     envelope = {...this.state.envelope, [mod[1]]: val}
-    //     break
-    //
-    //   case 'filterEnvelope':
-    //     filterEnvelope = {...this.state.filterEnvelope, [mod[1]]: val}
-    //     break
-    //
-    //   case 'filter':
-    //     filter = {...this.state.filter, [mod[1]]: val}
-    //     break
-    // }
-    //
-    // this.setState({oscillator, envelope, filterEnvelope, filter})
-    // const envelopeF = () => {
-    //   const {attack, decay, sustain, release } = this.state.envelope
-    //   const env = this.synth.envelope
-    //   env.attack = attack
-    //   env.decay = decay
-    //   env.sustain = sustain
-    //   env.release = release
-    // }
-    //
-    // const filterEnvelopeF= () => {
-    //   const {attack, decay, sustain, release } = this.state.filterEnvelope
-    //   const env = this.synth.envelope
-    //   env.attack = attack
-    //   env.decay = decay
-    //   env.sustain = sustain
-    //   env.release = release
-    // }
-    //
-    // envelopeF()
-    // filterEnvelopeF()
-    //
-    // this.synth.filterEnvelope.baseFrequency = this.state.filterEnvelope.baseFrequency
-
   }
 
   handleRadioButtonChange(val){
-    // console.log('v', val, this.synth)
     let str
     switch(val){
       case 0:
@@ -243,47 +162,36 @@ class Monosynth extends React.Component {
         str = 'sine'
         break
     }
-    // console.log('str', str)
-
     this.synth.oscillator.type = str
   }
 
   handlePitchChange(val, beat){
-    // console.log(val, beat)
     const sequence = [...this.state.sequence]
     sequence[beat].pitch = val
     this.setState({sequence})
   }
+  handleVelocityChange(val, beat){
+    const sequence = [...this.state.sequence]
+    sequence[beat].velocity = val
+    this.setState({sequence})
+  }
+
+  removeSynth(){
+    this.synth.dispose()
+  }
   componentDidMount(){
     const that = this
     this.loop = new Tone.Sequence(function(time, beat){
-      // that.setState({transport: {beat, time}})
-      // console.log(that.state.sequence[beat])
-      // this.setState({currentSequence: that.props.sequence[beat]})
-      const {pitch, duration} = that.state.sequence[beat]
-      // this.synth.triggerAttackRelease(this.state.currentSequence.pitch, this.state.currentSequence.duration, this.state.transport.time)
-      that.synth.triggerAttackRelease(pitch, duration, time)
-    }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n')
-    this.loop.start()
+      const {pitch, velocity, duration} = that.state.sequence[beat]
 
-    // this.synth = new Tone.MonoSynth({
-    //   oscillator: this.state.oscillator,
-    //   envelope: this.state.envelope,
-    //   filterEnvelope: this.state.filterEnvelope
-    // }).toMaster()
+      if(velocity) that.synth.triggerAttackRelease(pitch, duration, time, velocity)
+    }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n').start()
+    // this.loop.start()
+
     const settings = this.state.settings
     this.synth = new Tone.MonoSynth(settings
     ).toMaster()
-
-    const obj = {...this.synth}
-
-    console.log('obj', obj)
-
-    // const oscillator = {...this.state.oscillator}
-    // const envelope = {...this.state.envelope}
-
-    // this.setState({oscillator, envelope})
-
+    this.props.toneInstruments.push(this)
 
     const defaultSlider = {
       'size': [20,120],
@@ -301,6 +209,14 @@ class Monosynth extends React.Component {
       'step': 1,
       'value': 64
     }
+    const velocitySlider = {
+      'size': [20,120],
+      'mode': 'relative',  // 'relative' or 'absolute'
+      'min': 0,
+      'max': 1,
+      'step': 0,
+      'value': 1
+    }
 
     const filterFreqSlider = {
       'size': [20,120],
@@ -310,12 +226,6 @@ class Monosynth extends React.Component {
       'step': 0,
       'value': 150
     }
-
-
-
-    // this.dial1 = new Nexus.Dial('#dial')
-    // this.dial1.on('change', (val)=>this.handleRadioButtonChange(val, 'envelope.attack') )
-    // console.log('this.props.id',this.props.id)
 
     this.oscillatorType = new Nexus.RadioButton(`#oscillatorType${this.props.id}`,{
       'size': [120,25],
@@ -349,71 +259,19 @@ class Monosynth extends React.Component {
 
       }
     }
-    /*
-    const eA = 'envelope.attack'
-    const arr = eA.split('.')
-    const partA = arr[0]
-    const partB = arr[1].substr(0,1).toUpperCase()
-    const partC = arr[1].substr(1)
-    const eACamel = [partA, partB, partC].join('')
-    console.log(partA, partB, partC, eACamel)
 
-
-    this[eA] = new Nexus.Slider(`#${eA + this.props.id}`,defaultSlider)
-    this[eA].value = this.state.settings.envelope.attack
-    this[eA].on('change', (val)=>this.handleControlChange(val, eA) )
-
-    // this.envelopeAttack = new Nexus.Slider(`#envelopeAttack${this.props.id}`,defaultSlider)
-    // this.envelopeAttack.value = this.state.settings.envelope.attack
-    // this.envelopeAttack.on('change', (val)=>this.handleControlChange(val, 'envelope.attack') )
-
-    this.envelopeDecay = new Nexus.Slider(`#envelopeDecay${this.props.id}`,defaultSlider)
-    this.envelopeDecay.value = this.state.settings.envelope.decay
-    this.envelopeDecay.on('change', (val)=>this.handleControlChange(val, 'envelope.decay') )
-
-    this.envelopeSustain = new Nexus.Slider(`#envelopeSustain${this.props.id}`,defaultSlider)
-    this.envelopeSustain.value = this.state.settings.envelope.sustain
-    this.envelopeSustain.on('change', (val)=>this.handleControlChange(val, 'envelope.sustain') )
-
-    this.envelopeRelease = new Nexus.Slider(`#envelopeRelease${this.props.id}`,defaultSlider)
-    this.envelopeRelease.value = this.state.settings.envelope.release
-    this.envelopeRelease.on('change', (val)=>this.handleControlChange(val, 'envelope.release') )
-
-
-
-    this.filterEnvelopeAttack = new Nexus.Slider(`#filterEnvelopeAttack${this.props.id}`,defaultSlider)
-    this.filterEnvelopeAttack.value = this.state.settings.filterEnvelope.attack
-    this.filterEnvelopeAttack.on('change', (val)=>this.handleControlChange(val, 'filterEnvelope.attack') )
-
-    this.filterEnvelopeDecay = new Nexus.Slider(`#filterEnvelopeDecay${this.props.id}`,defaultSlider)
-    this.filterEnvelopeDecay.value = this.state.settings.filterEnvelope.decay
-    this.filterEnvelopeDecay.on('change', (val)=>this.handleControlChange(val, 'filterEnvelope.decay') )
-
-    this.filterEnvelopeSustain = new Nexus.Slider(`#filterEnvelopeSustain${this.props.id}`,defaultSlider)
-    this.filterEnvelopeSustain.value = this.state.settings.filterEnvelope.sustain
-    this.filterEnvelopeSustain.on('change', (val)=>this.handleControlChange(val, 'filterEnvelope.sustain') )
-
-    this.filterEnvelopeRelease = new Nexus.Slider(`#filterEnvelopeRelease${this.props.id}`,defaultSlider)
-    this.filterEnvelopeRelease.value = this.state.settings.filterEnvelope.release
-    this.filterEnvelopeRelease.on('change', (val)=>this.handleControlChange(val, 'filterEnvelope.release') )
-
-    this.filterFrequency = new Nexus.Slider(`#filterfrequency${this.props.id}`,filterFreqSlider)
-    this.filterFrequency.value = this.state.settings.filterEnvelope.baseFrequency
-    this.filterFrequency.on('change', (val)=>this.handleControlChange(val, 'filterEnvelope.baseFrequency') )
-    */
-    this.beatSliders = []
+    this.pitchSliders = []
     this.state.sequence.forEach((beat,i)=>{
-      this.beatSliders[i] = new Nexus.Slider(`#beat-${this.props.id}-${i}`,pitchSlider)
-      this.beatSliders[i].value = this.state.sequence[i].pitch
-      this.beatSliders[i].on('change', (val)=>this.handlePitchChange(val, i) )
+      this.pitchSliders[i] = new Nexus.Slider(`#pitch-${this.props.id}-${i}`,pitchSlider)
+      this.pitchSliders[i].value = this.state.sequence[i].pitch
+      this.pitchSliders[i].on('change', (val)=>this.handlePitchChange(val, i) )
     })
-    // const el = document.querySelector('#target')
-    // console.log(el)
-    // console.log(this.sequencerElement)
-    // if(this.sequencerElement)   this.sequencer = new Nexus.Sequencer(this.sequencerElement)
-
-
-
+    this.velocitySliders = []
+    this.state.sequence.forEach((beat,i)=>{
+      this.velocitySliders[i] = new Nexus.Slider(`#velocity-${this.props.id}-${i}`,velocitySlider)
+      this.velocitySliders[i].value = this.state.sequence[i].velocity
+      this.velocitySliders[i].on('change', (val)=>this.handleVelocityChange(val, i) )
+    })
   }
 
 
@@ -442,10 +300,16 @@ class Monosynth extends React.Component {
             <div id={`filterEnvelope.baseFrequency${this.props.id}`}></div>
           </div>
         </div>
-
-        <div className="notes">
-          <div className="control-container">
-            {this.state.sequence.map((beat, i)=><div key={i} id={`beat-${this.props.id}-${i}`}></div>)}
+        <div className="controls">
+          <div className="notes">
+            <div className="control-container">
+              {this.state.sequence.map((beat, i)=><div key={i} id={`pitch-${this.props.id}-${i}`}></div>)}
+            </div>
+          </div>
+          <div className="velocities">
+            <div className="control-container">
+              {this.state.sequence.map((beat, i)=><div key={i} id={`velocity-${this.props.id}-${i}`}></div>)}
+            </div>
           </div>
         </div>
       </div>
