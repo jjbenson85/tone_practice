@@ -103,6 +103,12 @@ class Monosynth extends React.Component {
       patternChain: [],
       patterns: [
         JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
+        JSON.parse(JSON.stringify(sequence)),
         JSON.parse(JSON.stringify(sequence))
       ],
       // sequence,
@@ -232,8 +238,25 @@ class Monosynth extends React.Component {
 
       if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
 
-      if(beat===15) currentPattern++
-      if(currentPattern > patternChain.length-1) currentPattern = 0
+      Tone.Draw.schedule(function(){
+        that.addPatternButtons.forEach((button,i) => {
+          button.classList.remove('active')
+        })
+        that.addPatternButtons[currentPattern].classList.add('active')
+      }, time)
+      
+      if(beat===15){
+        currentPattern++
+
+        if(currentPattern > patternChain.length-1) currentPattern = 0
+
+        // Tone.Draw.schedule(function(){
+        //   that.addPatternButtons.forEach((button,i) => {
+        //     button.classList.remove('active')
+        //   })
+        //   that.addPatternButtons[currentPattern].classList.add('active')
+        // }, time)
+      }
 
       that.setState({currentPattern})
 
