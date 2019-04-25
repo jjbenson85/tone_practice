@@ -4,109 +4,64 @@ import Nexus from 'nexusui'
 
 // import Nexus from '../js/NexusUI'
 
+const noteOff = {
+  beat: 0,
+  pitch: 0,
+  velocity: 0,
+  duration: '32n'
+}
+
+const note1 = {
+  beat: 0,
+  pitch: 44,
+  velocity: 1,
+  duration: '32n'
+}
+
+const note2 = {
+  beat: 0,
+  pitch: 48,
+  velocity: 1,
+  duration: '32n'
+}
+const note3 = {
+  beat: 0,
+  pitch: 62,
+  velocity: 1,
+  duration: '32n'
+}
+
+
+
+
+
+
+
+const sequence = [
+  note1,
+  noteOff,
+  note2,
+  noteOff,
+  note3,
+  noteOff,
+  note1,
+  noteOff,
+  note2,
+  noteOff,
+  note3,
+  noteOff,
+  note1,
+  noteOff,
+  note2,
+  noteOff
+]
+
 class Monosynth extends React.Component {
   constructor(){
     super()
 
     this.state={
-      sequence: [
-        {
-          beat: 0,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 1,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 2,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 3,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 4,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 5,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 6,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 7,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 8,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 9,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 10,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 11,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 12,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 13,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        },
-        {
-          beat: 14,
-          pitch: 64,
-          velocity: 1,
-          duration: '32n'
-        },
-        {
-          beat: 15,
-          pitch: 64,
-          velocity: 0,
-          duration: '32n'
-        }
-      ],
+      sequence,
       settings: {
         oscillator: {
           type: 'pwm',
@@ -115,15 +70,15 @@ class Monosynth extends React.Component {
         envelope: {
           attack: 0.01,
           decay: 0.1,
-          sustain: 0.2,
-          release: 0.1
+          sustain: 0.9,
+          release: 0.9
         },
         filterEnvelope: {
           attack: 0.01 ,
           decay: 0.2 ,
           sustain: 0.5 ,
-          release: 0.1 ,
-          baseFrequency: 150 ,
+          release: 0.9 ,
+          baseFrequency: 75 ,
           octaves: 5 ,
           exponent: 2
         },
@@ -332,6 +287,11 @@ class Monosynth extends React.Component {
                 {this.state.sequence.map((beat, i)=><div key={i} id={`velocity-${this.props.id}-${i}`}></div>)}
               </div>
             </div>
+          </div>
+          <div className="patterns">
+          <div className="control-container">
+            {this.state.sequence.map((beat, i)=><div key={i} id={`pattern-${this.props.id}-${i}`}></div>)}
+          </div>
           </div>
         </div>
       </div>

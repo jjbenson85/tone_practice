@@ -15,7 +15,7 @@ class App extends React.Component {
     super()
 
     this.state={
-      instruments: ['Monosynth','Monosynth','Monosynth'],
+      instruments: ['Monosynth'],
       toneInstruments: []
     }
 

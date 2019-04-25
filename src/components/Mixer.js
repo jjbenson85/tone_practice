@@ -113,20 +113,18 @@ class Mixer extends React.Component {
 
       case 'pan':
         channels[channel].pan = val
-
         this.channelArr[channel].pan.linearRampToValueAtTime(val, +0.1)
         console.log('pan', val)
         break
 
       case 'aux1':
         channels[channel].aux1 = val
-        this.channelArr[channel].aux1.gain.rampTo(val, 0.1)
+        this.aux1Send[channel].gain.rampTo(gainToDb(val), 0.1)
         break
 
       case 'aux2':
         channels[channel].aux2 = val
-        this.channelArr[channel].aux2.gain.rampTo(val, 0.1)
-
+        this.aux2Send[channel].gain.rampTo(gainToDb(val), 0.1)
         break
 
     }
