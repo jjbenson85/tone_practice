@@ -1,18 +1,91 @@
+body{
+    margin: 0;
+    box-sizing: border-box;
+}
+
 .control-container{
   display: flex;
 }
 
-.monosynth{
-  border: 1px solid red;
-  background-color: #eee;
-  height: 400px;
+.rack{
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  .monosynth{
+    width: 100%;
+    height: 400px;
+    flex: none;
+    scroll-snap-align: center;
+    margin-right: 20px;
+    // padding: 20px;
+    .inner{
+      margin: 20px;
+      border: 1px solid red;
+      background-color: #eee;
+    }
+  }
 }
+
+
 .controls{
   display: flex;
   justify-content: space-around;
 }
 
-.notes, .velocities{
+.notes, .velocities, .channels, .strip{
   display: flex;
   justify-content: center;
+}
+
+.mixer{
+  .channel{
+    width: 80px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    border: 1px solid black;
+    .label{
+      height: 1rem;
+    }
+    .mute-solo{
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      .mute{
+        height: 25px;
+        width: 25px;
+        background-color: orange;
+        &.active{
+            background-color: red;
+        }
+      }
+      .solo{
+        height: 25px;
+        width: 25px;
+        background-color: lightgreen;
+        &.active{
+          background-color: green;
+        }
+      }
+      // .disabled{
+      //   background-color: grey;
+      // }
+
+    }
+    .level-container{
+      // height: 400px;
+      // width: 40px;
+      display: flex;
+      flex-direction: column-reverse;
+      .level{
+        position: relative;
+        bottom: 0;
+        width: 20px;
+        background-color: green;
+        height:50px;
+      }
+    }
+  }
 }
