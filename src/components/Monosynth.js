@@ -92,6 +92,17 @@ const sequence = [
   noteOff
 ]
 
+// const pattern = {
+//   id: 0,
+//   sequence: JSON.parse(JSON.stringify(sequence))
+// }
+
+const insertPattern = id => {
+  return {
+    id,
+    sequence: JSON.parse(JSON.stringify(sequence))
+  }
+}
 
 class Monosynth extends React.Component {
   constructor(){
@@ -102,14 +113,10 @@ class Monosynth extends React.Component {
       currentPattern: 0,
       patternChain: [],
       patterns: [
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence)),
-        JSON.parse(JSON.stringify(sequence))
+        insertPattern(0),
+        insertPattern(1),
+        insertPattern(2),
+        insertPattern(3)
       ],
       // sequence,
       settings: {
@@ -139,7 +146,6 @@ class Monosynth extends React.Component {
         }
       }
     }
-
     this.state.patternChain.push(this.state.patterns[0])
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleRadioButtonChange = this.handleRadioButtonChange.bind(this)
@@ -176,17 +182,23 @@ class Monosynth extends React.Component {
   handlePitchChange(val, beat){
     // if (this.updating) return
     console.log('hPC', this.state.selectedPattern)
-    const sequence = [...this.state.patterns[this.state.selectedPattern]]
-    sequence[beat].pitch = val
-    this.setState({sequence})
+    // const sequence = [...this.state.patterns[this.state.selectedPattern]]
+    // sequence[beat].pitch = val
+    // this.setState({sequence})
+    const patterns = [...this.state.patterns]
+    patterns[this.state.selectedPattern].sequence[beat].pitch = val
+    this.setState({patterns})
   }
   handleVelocityChange(val, beat){
-    const sequence = [...this.state.patterns[this.state.selectedPattern]]
-    sequence[beat].velocity = val
-    this.setState({sequence})
+    // const sequence = [...this.state.patterns[this.state.selectedPattern]]
+    // sequence[beat].velocity = val
+    // this.setState({sequence})
+    const patterns = [...this.state.patterns]
+    patterns[this.state.selectedPattern].sequence[beat].velocity = val
+    this.setState({patterns})
   }
 
-  handlePatternChange(e, selectedPattern){
+  handlePatternChange(selectedPattern){
 
     this.setState({selectedPattern})
 
@@ -195,8 +207,8 @@ class Monosynth extends React.Component {
     })
 
     this.pitchSliders.forEach((elem,i)=>{
-      this.pitchSliders[i].value = this.state.patterns[selectedPattern][i].pitch
-      this.velocitySliders[i].value = this.state.patterns[selectedPattern][i].velocity
+      this.pitchSliders[i].value = this.state.patterns[selectedPattern].sequence[i].pitch
+      this.velocitySliders[i].value = this.state.patterns[selectedPattern].sequence[i].velocity
     })
 
     this.patternButtons[selectedPattern].classList.add('active')
@@ -229,67 +241,42 @@ class Monosynth extends React.Component {
     const that = this
 
     this.loop = new Tone.Sequence(function(time, beat){
-      let currentPattern = that.state.currentPattern
+      let {currentPattern} = that.state
       const {patternChain} = that.state
+      console.log(patternChain[currentPattern].id)
       // const {pitch, velocity, duration} = that.state.patterns[that.state.selectedPattern][beat]
-      const {pitch, velocity, duration} = patternChain[currentPattern][beat]
+      const {pitch, velocity, duration} = patternChain[currentPattern].sequence[beat]
 
       const pitchHz = Tone.Frequency(pitch, 'midi') //
 
       if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
 
-      Tone.Draw.schedule(function(){
-        that.addPatternButtons.forEach((button,i) => {
-          button.classList.remove('active')
-        })
-        that.addPatternButtons[currentPattern].classList.add('active')
-      }, time)
-      
-      if(beat===15){
+      if(beat===0){
+        Tone.Draw.schedule(function(){
+          that.addPatternButtons.forEach( button => {
+            button.classList.remove('active')
+          })
+          that.addPatternButtons[patternChain[currentPattern].id].classList.add('active')
+        }, time)
+        that.handlePatternChange(currentPattern)
+        that.setState({selectedPattern: currentPattern})
+      } else if(beat===15){
         currentPattern++
 
         if(currentPattern > patternChain.length-1) currentPattern = 0
 
-        // Tone.Draw.schedule(function(){
-        //   that.addPatternButtons.forEach((button,i) => {
-        //     button.classList.remove('active')
-        //   })
-        //   that.addPatternButtons[currentPattern].classList.add('active')
-        // }, time)
+        that.setState({currentPattern})
       }
 
-      that.setState({currentPattern})
 
 
     }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n').start()
-    // this.loop.start()
 
     const settings = this.state.settings
 
     this.synth = new Tone.MonoSynth(settings)
 
-    // this.props.toneInstruments.push(this)
-
     this.props.attachSynth(this, this.props.id)
-
-
-
-    // const reverb = new Tone.Reverb({
-    //   decay: 1.5 ,
-    //   preDelay: 0.01
-    // }).toMaster()
-
-    // const dist = new Tone.Distortion(0.8)
-    // var pingPong = new Tone.PingPongDelay('4n', 0.2)
-    //
-    // const effectsChain = [pingPong, dist, Tone.Master]
-    //
-    // this.synth.chain(...effectsChain)
-
-
-
-
-
 
     this.oscillatorType = new Nexus.RadioButton(`#oscillatorType${this.props.id}`,{
       'size': [120,25],
@@ -325,22 +312,22 @@ class Monosynth extends React.Component {
     }
 
     this.pitchSliders = []
-    this.state.patterns[this.state.selectedPattern].forEach((beat,i)=>{
+    this.state.patterns[this.state.selectedPattern].sequence.forEach((beat,i)=>{
       this.pitchSliders[i] = Nexus.Add.Slider(`#pitch-${this.props.id}-${i}`,pitchSlider)
-      this.pitchSliders[i].value = this.state.patterns[this.state.selectedPattern][i].pitch
+      this.pitchSliders[i].value = this.state.patterns[this.state.selectedPattern].sequence[i].pitch
       this.pitchSliders[i].on('change', (val)=>this.handlePitchChange(val, i) )
     })
     this.velocitySliders = []
-    this.state.patterns[this.state.selectedPattern].forEach((beat,i)=>{
+    this.state.patterns[this.state.selectedPattern].sequence.forEach((beat,i)=>{
       this.velocitySliders[i] = Nexus.Add.Slider(`#velocity-${this.props.id}-${i}`,velocitySlider)
-      this.velocitySliders[i].value = this.state.patterns[this.state.selectedPattern][i].velocity
+      this.velocitySliders[i].value = this.state.patterns[this.state.selectedPattern].sequence[i].velocity
       this.velocitySliders[i].on('change', (val)=>this.handleVelocityChange(val, i) )
     })
 
     this.patternButtons = []
     this.state.patterns.forEach((pattern, i)=>{
       this.patternButtons[i] = document.querySelector(`#pattern-${this.props.id}-${i}`)
-      this.patternButtons[i].onclick =  (e) => this.handlePatternChange(e, i)
+      this.patternButtons[i].onclick =  () => this.handlePatternChange(i)
     })
     this.patternButtons[this.state.selectedPattern].classList.add('active')
 
@@ -382,12 +369,12 @@ class Monosynth extends React.Component {
           <div className="controls">
             <div className="notes">
               <div className="control-container">
-                {this.state.patterns[this.state.selectedPattern].map((beat, i)=><div key={i} id={`pitch-${this.props.id}-${i}`}></div>)}
+                {this.state.patterns[this.state.selectedPattern].sequence.map((beat, i)=><div key={i} id={`pitch-${this.props.id}-${i}`}></div>)}
               </div>
             </div>
             <div className="velocities">
               <div className="control-container">
-                {this.state.patterns[this.state.selectedPattern].map((beat, i)=><div key={i} id={`velocity-${this.props.id}-${i}`}></div>)}
+                {this.state.patterns[this.state.selectedPattern].sequence.map((beat, i)=><div key={i} id={`velocity-${this.props.id}-${i}`}></div>)}
               </div>
             </div>
           </div>

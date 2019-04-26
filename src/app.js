@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import Tone from 'tone'
 
 import Monosynth from './components/Monosynth'
+import Polysynth from './components/Polysynth'
 import Mixer from './components/Mixer'
 // import GridSequencer from './components/GridSequencer'
 
@@ -15,7 +16,7 @@ class App extends React.Component {
     super()
 
     this.state={
-      instruments: ['Monosynth'],
+      instruments: ['Polysynth'],
       toneInstruments: []
     }
 
@@ -40,6 +41,10 @@ class App extends React.Component {
     const instruments = [...this.state.instruments, 'Monosynth']
     this.setState({instruments})
   }
+  addPolySynth(){
+    const instruments = [...this.state.instruments, 'Polysynth']
+    this.setState({instruments})
+  }
   attachSynth(synth, i){
     // console.log('this.state.toneInstruments', this.state)
     const toneInstruments = this.state.toneInstruments
@@ -56,6 +61,26 @@ class App extends React.Component {
     this.setState({toneInstruments, instruments})
   }
 
+  buildInstrument(inst, i){
+    switch(inst){
+      case 'Monosynth':
+        return <Monosynth
+          key={i}
+          id={i}
+          toneInstruments={this.state.toneInstruments}
+          attachSynth={this.attachSynth}
+        />
+      case 'Polysynth':
+        return <Polysynth
+          key={i}
+          id={i}
+          toneInstruments={this.state.toneInstruments}
+          attachSynth={this.attachSynth}
+        />
+    }
+  }
+
+
   render() {
 
     return (
@@ -63,9 +88,10 @@ class App extends React.Component {
         <button onClick={()=>this.playSound()}>PLAY</button>
         <button onClick={()=>this.stopSound()}>STOP</button>
         <button onClick={()=>this.addSynth()}>ADD</button>
+        <button onClick={()=>this.addPolySynth()}>Add Poly</button>
         <button onClick={()=>this.removeSynth()}>REMOVE</button>
         <div className="rack">
-          {this.state.instruments.map( (inst,i) => <Monosynth key={i} id={i} toneInstruments={this.state.toneInstruments} attachSynth={this.attachSynth}/>)}
+          {this.state.instruments.map( (inst,i) => this.buildInstrument(inst, i))}
         </div>
         <Mixer id="1" toneInstruments={this.state.toneInstruments} len={this.state.toneInstruments.length}/>
 

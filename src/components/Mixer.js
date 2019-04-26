@@ -237,14 +237,27 @@ class Mixer extends React.Component {
   componentDidMount(){
     this.levelElemArr = document.querySelectorAll('.level')
     const that = this
-    new Tone.Loop(function(time){
+    // new Tone.Loop(function(time){
+    //   Tone.Draw.schedule(function(){
+    //     that.levelElemArr.forEach((level,i) => {
+    //       level.style.height = (Tone.dbToGain(that.meterArr[i].getLevel())*400)+'px'
+    //     })
+    //   }, time)
+    //
+    // }, '64n').start
+
+    Tone.Transport.scheduleRepeat(function(time){
       Tone.Draw.schedule(function(){
         that.levelElemArr.forEach((level,i) => {
-          level.style.height = (Tone.dbToGain(that.meterArr[i].getLevel())*400)+'px'
+          const signal = that.meterArr[i].getLevel()
+          if(signal < -52) {
+            level.style.height = '0px'
+            return
+          }
+          level.style.height = (Tone.dbToGain(signal)*400)+'px'
         })
       }, time)
-
-    }, '64n').start()
+    }, '64n')
 
     this.buildChannels()
     this.connectInstrumentsToChannels()
