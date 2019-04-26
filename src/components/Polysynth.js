@@ -152,7 +152,7 @@ class Polysynth extends React.Component {
     const that = this
     this.loop = new Tone.Sequence(function(time, beat){
       const {pitch, velocity, duration} = that.state.patterns[that.state.selectedPattern].sequence[beat]
-      const pitchHz = pitch.map((hz) => Tone.Frequency(hz, 'midi'))
+      const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
 
       if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
 
@@ -212,7 +212,7 @@ class Polysynth extends React.Component {
     // this.noteArray = new Array(12*5).fill(JSON.parse(JSON.stringify(beats)))
 
     this.noteArray = []
-    for (let i = 0; i < 12*5; i++) {
+    for (let i = 0; i <= 72; i++) {
       this.noteArray[i] = []
       for (var j = 0; j < 16; j++) {
         this.noteArray[i][j] = false
@@ -228,7 +228,7 @@ class Polysynth extends React.Component {
 
     this.setState({octave: val})
 
-    // this.drawGrid()
+    this.drawGrid()
   }
 
   drawGrid(){
@@ -236,10 +236,15 @@ class Polysynth extends React.Component {
     this.gridCells.forEach( cell => {
       const {row, col} = cell.dataset
       const pitch = parseInt(row) + (octave*12)
+
       console.log(row, pitch, col, this.noteArray[pitch][col])
+
       cell.classList.remove('active')
+
       if(this.noteArray[pitch][col]){
+
         console.log('here')
+
         cell.classList.add('active')
       }
     })
@@ -249,7 +254,7 @@ class Polysynth extends React.Component {
   toggleGrid(e){
 
     const {col, row} = e.target.dataset
-    const elem = e.currentTarget
+    // const elem = e.currentTarget
     const patterns = [...this.state.patterns]
     const note = patterns[this.state.selectedPattern].sequence[col]
     const pitch = parseInt(row)+(this.state.octave*12)
