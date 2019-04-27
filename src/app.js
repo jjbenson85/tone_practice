@@ -26,7 +26,13 @@ class App extends React.Component {
     // const effectsChain = [pingPong, dist, Tone.Master]
     //
     // this.synth.chain(...effectsChain)
+    this.stopSynthArr = []
+
     this.attachSynth = this.attachSynth.bind(this)
+
+    Tone.Transport.loop = true
+    Tone.Transport.loopStart = '0m'
+    Tone.Transport.loopEnd = '4m'
   }
 
 
@@ -36,6 +42,8 @@ class App extends React.Component {
   }
   stopSound(){
     Tone.Transport.stop()
+    Tone.Transport.position = '0:0:0'
+    this.state.toneInstruments.forEach(inst => inst.stop())
   }
   addSynth(){
     const instruments = [...this.state.instruments, 'Monosynth']

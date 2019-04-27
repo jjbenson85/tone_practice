@@ -8,6 +8,7 @@ const rowArr = Array.from(Array(13), (x,i) => i)
 const colArr = Array.from(Array(16), (x,i) => i)
 
 const blackRows = ['1','3','6','8','10']
+const downBeats = ['0','4','8','12']
 const defaultSlider = {
   'size': [20,120],
   'mode': 'absolute',  // 'relative' or 'absolute'
@@ -44,7 +45,7 @@ const filterFreqSlider = {
 
 const settings = {
   oscillator: {
-    type: 'pwm',
+    type: 'sawtooth',
     modulationFrequency: 0.2
   },
   envelope: {
@@ -72,28 +73,8 @@ const settings = {
 const noteOff = {
   beat: 0,
   pitch: [],
-  velocity: [0],
-  duration: '32n'
-}
-
-const note1 = {
-  beat: 0,
-  pitch: [44, 48, 51],
-  velocity: 1,
-  duration: '32n'
-}
-
-const note2 = {
-  beat: 0,
-  pitch: [48, 51, 55],
-  velocity: 1,
-  duration: '32n'
-}
-const note3 = {
-  beat: 0,
-  pitch: [51,55,58],
-  velocity: 1,
-  duration: '32n'
+  velocity: [],
+  duration: []
 }
 
 const sequence = [
@@ -126,8 +107,10 @@ class Polysynth extends React.Component {
   constructor(){
     super()
     this.state = {
+      beat: 0,
       selectedPattern: 0,
       octave: 3,
+      duration: '16n',
       patterns: [
         insertPattern(0),
         insertPattern(1),
@@ -144,24 +127,71 @@ class Polysynth extends React.Component {
     this.synth.dispose()
   }
 
+  stop(){
+    console.log('stop', this.props.id)
+    this.setState({beat: 0})
+    Tone.Draw.schedule(()=>{
+      this.removePostion()
+    })
+  }
+
+  removePostion(){
+    this.gridCols.forEach(col => col.classList.remove('active') )
+
+  }
+  drawPosition(beat){
+    this.removePostion()
+    this.gridCols[beat].classList.add('active')
+  }
+
   componentDidMount(){
     this.synth = new Tone.PolySynth()
     this.synth.set(settings)
     this.props.attachSynth(this, this.props.id)
 
-    const that = this
-    this.loop = new Tone.Sequence(function(time, beat){
-      const {pitch, velocity, duration} = that.state.patterns[that.state.selectedPattern].sequence[beat]
+    // const that = this
+
+
+    // this.loop = new Tone.Sequence(function(time, beat){
+    //   const {pitch, velocity, duration} = that.state.patterns[that.state.selectedPattern].sequence[beat]
+    //   const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
+    //
+    //   if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
+    //
+    //   Tone.Draw.schedule(function(){
+    //     that.gridCols.forEach(col => col.classList.remove('active'))
+    //     that.gridCols[beat].classList.add('active')
+    //   }, time)
+    //   // Tone.Transport.schedule(function(time){
+    //   // 	//time = sample accurate time of the event
+    //   // }, "1m");
+    //
+    // }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n').start()
+
+    Tone.Transport.scheduleRepeat((time)=>{
+      // note.triggerAttack(time)
+      let {beat} = this.state
+
+
+      const {pitch, velocity, duration} = this.state.patterns[this.state.selectedPattern].sequence[beat]
       const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
 
-      if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
+      if(velocity) this.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
 
-      Tone.Draw.schedule(function(){
-        that.gridCols.forEach(col => col.classList.remove('active'))
-        that.gridCols[beat].classList.add('active')
+      Tone.Draw.schedule(()=>{
+        // that.gridCols.forEach(col => col.classList.remove('active'))
+        // that.gridCols[beat].classList.add('active')
+        this.drawPosition(beat)
       }, time)
+      // Tone.Transport.schedule(function(time){
+      // 	//time = sample accurate time of the event
+      // }, "1m");
 
-    }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n').start()
+
+
+      beat = ++beat % 16
+      this.setState({beat})
+    }, '16n', '0m')
 
     // const mainSettings = Object.keys(this.state.settings)
     //
@@ -190,14 +220,16 @@ class Polysynth extends React.Component {
     this.gridCells = polyElement.querySelectorAll('.cell')
 
     this.gridCells.forEach(cell => {
-      cell.addEventListener('click', (e) => this.toggleGrid(e))
+      cell.addEventListener('click', (e) => this.clickGrid(e))
+      // cell.addEventListener('mouseover', (e) => this.mouseoverGrid(e))
 
       if(blackRows.includes(cell.dataset.row)) cell.classList.add('black')
+      if(downBeats.includes(cell.dataset.col)) cell.classList.add('down-beat')
     })
 
     this.gridCols = polyElement.querySelectorAll('.col')
 
-    const ocatveSlider = new Nexus.Slider(`#octaves-${this.props.id}`,{
+    const octaveSlider = new Nexus.Slider(`#octaves-${this.props.id}`,{
       'size': [120,20],
       'mode': 'relative',  // 'relative' or 'absolute'
       'min': 0,
@@ -205,8 +237,19 @@ class Polysynth extends React.Component {
       'step': 1,
       'value': 3
     })
-    // ocatveSlider.value = this.state.settings[main][second]
-    ocatveSlider.on('change', (val)=>this.handleControlChange(val, 'octave') )
+    // octaveSlider.value = this.state.settings[main][second]
+    octaveSlider.on('change', (val)=>this.handleControlChange(val, 'octave') )
+
+    const durationSlider = new Nexus.Slider(`#duration-${this.props.id}`,{
+      'size': [120,20],
+      'mode': 'relative',  // 'relative' or 'absolute'
+      'min': 0,
+      'max': 5,
+      'step': 1,
+      'value': 1
+    })
+    // durationSlider.value = this.state.settings[main][second]
+    durationSlider.on('change', (val)=>this.handleControlChange(val, 'duration') )
 
     // const beats = new Array(16).fill(0)
     // this.noteArray = new Array(12*5).fill(JSON.parse(JSON.stringify(beats)))
@@ -218,70 +261,142 @@ class Polysynth extends React.Component {
         this.noteArray[i][j] = false
       }
     }
-
-    console.log(this.noteArray)
-
   }
 
   handleControlChange(val, name){
-    console.log(val, name)
+    let value
 
-    this.setState({octave: val})
+    switch(name){
+      case 'octave':
+        this.setState({octave: val})
+        this.drawGrid()
 
-    this.drawGrid()
+        break
+
+      case 'duration':
+        switch(val){
+          case 5:
+            console.log('1n')
+            value = '1n'
+            break
+
+          case 4:
+            console.log('2n')
+            value = '2n'
+            break
+
+          case 3:
+            console.log('4n')
+            value = '4n'
+            break
+
+          case 2:
+            console.log('8n')
+            value = '8n'
+
+            break
+
+          case 1:
+            console.log('16n')
+            value = '16n'
+
+            break
+
+          case 0:
+            console.log('32n')
+            value = '32n'
+            break
+
+        }
+
+        // value = (32/(val+1))+'n'
+        this.setState({duration: value})
+        break
+    }
+
   }
 
   drawGrid(){
+    console.log('drawGrid')
     const {octave} = this.state
     this.gridCells.forEach( cell => {
       const {row, col} = cell.dataset
       const pitch = parseInt(row) + (octave*12)
 
-      console.log(row, pitch, col, this.noteArray[pitch][col])
-
       cell.classList.remove('active')
+      const delem = cell.querySelector('.note')
+      if(delem) cell.removeChild(delem)
+
 
       if(this.noteArray[pitch][col]){
+        const elem = document.createElement('div')
+        elem.classList.add('note', `d${this.noteArray[pitch][col]}` )
+        const val = this.noteArray[pitch][col].replace('n','')
 
-        console.log('here')
+        const width = ((640 / val) - 2)
+        elem.style.width = width+'px'
+        cell.appendChild(elem)
 
-        cell.classList.add('active')
       }
     })
-
   }
+  // mouseoverGrid(e){
+  //   // console.log(e.currentTarget)
+  //   const cell = e.currentTarget
+  //   const {duration} = this.state
+  //
+  //   // cell.classList.remove('active')
+  //   const delem = cell.querySelector('.note')
+  //   if(delem) cell.removeChild(delem)
+  //
+  //   const elem = document.createElement('div')
+  //   console.log('duration', duration)
+  //   elem.classList.add('note', duration )
+  //   // elem.addEventListener('mouseout', (e) => {
+  //   //   console.log('this', this)
+  //   //   this.mouseoutGrid(e)
+  //   // })
+  //
+  //   cell.appendChild(elem)
+  //
+  //
+  //
+  // }
+  // mouseoutGrid(e){
+  //   console.log(e.currentTarget)
+  //   e.currentTarget.parentNode.removeChild(e.currentTarget)
+  //   // this.drawGrid()
+  // }
+  clickGrid(e){
 
-  toggleGrid(e){
-
-    const {col, row} = e.target.dataset
+    const {col, row} = e.currentTarget.dataset
+    const {selectedPattern, duration} = this.state
     // const elem = e.currentTarget
     const patterns = [...this.state.patterns]
-    const note = patterns[this.state.selectedPattern].sequence[col]
+    const note = patterns[selectedPattern].sequence[col]
     const pitch = parseInt(row)+(this.state.octave*12)
 
-    this.noteArray[pitch][col] = !this.noteArray[pitch][col]
-    console.log(col, pitch, this.noteArray[pitch][col])
-    console.log('beep', pitch, col)
+    // this.noteArray[pitch][col] = !this.noteArray[pitch][col]
+    if(!this.noteArray[pitch][col]) this.noteArray[pitch][col] = duration
+    else   this.noteArray[pitch][col] = false
 
     if(this.noteArray[pitch][col]){
-      // elem.classList.add('active')
-
+      console.log(duration)
       const pitchHz = Tone.Frequency(pitch+24, 'midi')
-      this.synth.triggerAttackRelease(pitchHz, '8n')
+      this.synth.triggerAttackRelease(pitchHz, duration)
 
       note.pitch.push(pitch)
+      note.duration.push(duration)
       note.velocity = 1
 
     }else{
-
-      //Remove active class
-      // elem.classList.remove('active')
 
       // Get the index of this pitch in the pitch array
       const index = note.pitch.indexOf(pitch)
 
       //remove note from pitch array
       note.pitch.splice(index, 1)
+      note.duration.splice(index, 1)
 
       //If no noes left to be played this beat, turn off with velocity 0
       if(note.pitch.length===0) note.velocity = 0
@@ -329,9 +444,8 @@ class Polysynth extends React.Component {
               </div>
             </div>
           </div>*/}
-          <div id={`octaves-${id}`} className="octaves">
-
-          </div>
+          <div id={`octaves-${id}`} className="octaves"></div>
+          <div id={`duration-${id}`} className="duration"></div>
           <div className="grid">
             {colArr.map( col => <div key={col} className='col'>
               {rowArr.map( row =><div key={row} className='cell' data-col={col} data-row={row}></div>)}

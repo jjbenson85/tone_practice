@@ -1,3 +1,9 @@
+$col1: darken(white, 10%);
+$col2: darken(white, 20%);
+$col3: darken(white, 30%);
+$col4: darken(white, 40%);
+$col5: darken(white, 50%);
+
 .grid{
   display: flex;
   flex-direction: row;
@@ -11,20 +17,64 @@
       user-select: none;
       height:20px;
       width:40px;
-      border: 1px solid black;
-      background-color: white;
+
+      border: 1px solid grey;
+      background-color: $col1;
+      .note{
+        position: relative;
+        left: 0;
+        top: 0;
+        z-index: 5;
+        height:18px;
+        width:38px;
+        background-color: yellow;
+        // border: 1px solid grey;
+        // &.d32n{
+        //   width:calc(20px * 1 - 2px);
+        // }
+        // &.d16n{
+        //   width:calc(20px * 2 - 2px);
+        //
+        // }
+        // &.d8n{
+        //   width:calc(20px * 4 - 2px);
+        //
+        // }
+        // &.d4n{
+        //   width:calc(20px * 8 - 2px);
+        //
+        // }
+        //
+        // &.d2n{
+        //   width:calc(20px * 16 - 2px);
+        // }
+        //
+        // &.d1n{
+        //   width:calc(20px * 32 - 2px);
+        // }
+
+      }
+    }
+    .cell.down-beat{
+      background-color: #8AF;
+    }
+    .cell.black{
+      background-color: $col3;
+    }
+    .cell.down-beat.black{
+        background-color: mix(#8AF, $col3, 50%);
+    }
+    .cell.active{
+      background-color: green !important;
     }
     &.active{
       .cell{
-        border: 1px solid white;
+        background-color: $col2 ;
+      }
+      .cell.active{
+        background-color: red;
       }
     }
-    .cell.black{
-      background-color: black;
-    }
 
-    .cell.active{
-      background-color: green;
-    }
   }
 }

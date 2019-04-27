@@ -16,7 +16,7 @@ body{
   scroll-snap-type: x mandatory;
   .monosynth, .polysynth{
     width: 100%;
-    height: 400px;
+    height: 100vh;
     flex: none;
     scroll-snap-align: center;
     margin-right: 20px;
@@ -56,9 +56,9 @@ body{
 }
 
 .mixer{
+  height: 100vh;
   .channel{
     width: 80px;
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
