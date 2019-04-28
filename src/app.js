@@ -54,7 +54,6 @@ class App extends React.Component {
     this.setState({instruments})
   }
   attachSynth(synth, i){
-    // console.log('this.state.toneInstruments', this.state)
     const toneInstruments = this.state.toneInstruments
     toneInstruments[i] = synth
     this.setState({toneInstruments})
@@ -69,7 +68,6 @@ class App extends React.Component {
     this.setState({toneInstruments, instruments})
   }
   showSynth(i, e){
-    console.log(e)
     const tracks = document.querySelectorAll('.track')
     tracks.forEach(track=>track.classList.remove('active'))
     e.currentTarget.classList.add('active')
@@ -78,16 +76,6 @@ class App extends React.Component {
   }
   buildTrack(inst, i) {
     return <div key={i} className='track' onClick={(e)=>this.showSynth(i, e)}>{inst}</div>
-
-    // switch(inst){
-    //   case 'Monosynth':
-    //     break
-    //
-    //
-    //   case 'Polysynth':
-    //     <div key={i}>Polysynth</div>
-    //     break
-    // }
   }
   buildInstrument(inst, i){
     switch(inst){

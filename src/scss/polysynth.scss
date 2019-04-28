@@ -47,6 +47,8 @@ $col5: darken(white, 50%);
   .controls{
     display: flex;
     flex-direction: column;
+    width: 60px;
+    margin-left: 4px;
     .button{
       height: 100%;
       width:100%;
@@ -58,9 +60,13 @@ $col5: darken(white, 50%);
       &:hover{
         background-color: white;
       }
+      &.active{
+          background-color: green;
+      }
       &.hidden{
-          background: none;
-          border: none;
+          // background: none;
+          // border: none;
+          visibility: hidden;
           &:hover{
             background-color: none;
           }

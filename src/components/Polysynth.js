@@ -7,8 +7,10 @@ import '../scss/polysynth.scss'
 const rowArr = Array.from(Array(13), (x,i) => i)
 const colArr = Array.from(Array(16), (x,i) => i)
 
+const patternNames =['A','B','C','D']
 const blackRows = ['1','3','6','8','10']
 const downBeats = ['0','4','8','12']
+
 const defaultSlider = {
   'size': [20,120],
   'mode': 'absolute',  // 'relative' or 'absolute'
@@ -138,6 +140,8 @@ const insertPattern = id => {
   }
 }
 
+const thirteenArr= new Array(13).fill(0)
+
 class Polysynth extends React.Component {
   constructor(){
     super()
@@ -148,6 +152,8 @@ class Polysynth extends React.Component {
       octave: 3,
       duration: '16n',
       durationIndex: 1,
+      patternIndex: 0,
+      patternChain: [0],
       patterns: [
         insertPattern(0),
         insertPattern(1),
@@ -156,7 +162,6 @@ class Polysynth extends React.Component {
       ],
       settings
     }
-
 
   }
 
@@ -172,7 +177,6 @@ class Polysynth extends React.Component {
     this.setState({display: 'hidden'})
   }
   stop(){
-    console.log('stop', this.props.id)
     this.setState({beat: 0})
     Tone.Draw.schedule(()=>{
       this.removePostion()
@@ -198,9 +202,10 @@ class Polysynth extends React.Component {
 
 
     Tone.Transport.scheduleRepeat((time)=>{
-      let {beat} = this.state
+      let {beat, patternIndex} = this.state
+      const {patterns, patternChain} = this.state
 
-      const {pitch, velocity, duration} = this.state.patterns[this.state.selectedPattern].sequence[beat]
+      const {pitch, velocity, duration} = patterns[patternChain[patternIndex]].sequence[beat]
       const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
 
       if(velocity) this.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
@@ -210,6 +215,13 @@ class Polysynth extends React.Component {
       }, time)
 
       beat = ++beat % 16
+      if(beat===15){
+        patternIndex++
+
+        if(patternIndex > patternChain.length-1) patternIndex = 0
+
+        this.setState({patternIndex})
+      }
       this.setState({beat})
 
     }, '16n', '0m')
@@ -251,15 +263,18 @@ class Polysynth extends React.Component {
     this.gridCols = this.polyElement.querySelectorAll('.col')
 
     this.noteArray = []
-    for (let i = 0; i <= 72; i++) {
-      this.noteArray[i] = []
-      for (var j = 0; j < 16; j++) {
-        this.noteArray[i][j] = false
+    for (let x = 0; x <= 4; x++) {
+      this.noteArray[x] = []
+      for (let i = 0; i <= 72; i++) {
+        this.noteArray[x][i] = []
+        for (var j = 0; j < 16; j++) {
+          this.noteArray[x][i][j] = false
+        }
       }
     }
   }
 
-  handleControlChange(val, name){
+  handleControlChange(val, name, e){
     let value
     let index
     switch(name){
@@ -286,8 +301,22 @@ class Polysynth extends React.Component {
         this.setState({duration: value, durationIndex: val})
         break
 
+      case 'pattern':
+        //optimize
+        document.querySelectorAll('.button.pattern').forEach(x => x.classList.remove('active'))
+        e.currentTarget.classList.add('active')
+        this.setState({selectedPattern: val}, this.drawGrid)
+        break
+
+      case 'patternChain':
+        value = [...this.state.patternChain]
+        value.push(this.state.selectedPattern)
+        this.setState({patternChain: value})
+
+        break
+
+      //This is a synth setting, lose when sequencer made component
       case 'preset':
-        console.log('preset', val)
         switch(val){
           case 1:
             this.synth.set(settings)
@@ -303,7 +332,6 @@ class Polysynth extends React.Component {
   }
 
   drawGrid(){
-    console.log('drawGrid')
     const {octave} = this.state
     this.gridCells.forEach( cell => {
       const {row, col} = cell.dataset
@@ -314,10 +342,10 @@ class Polysynth extends React.Component {
       if(delem) cell.removeChild(delem)
 
 
-      if(this.noteArray[pitch][col]){
+      if(this.noteArray[this.state.selectedPattern][pitch][col]){
         const elem = document.createElement('div')
-        elem.classList.add('note', `d${this.noteArray[pitch][col]}` )
-        let val = this.noteArray[pitch][col].replace('n','')
+        elem.classList.add('note', `d${this.noteArray[this.state.selectedPattern][pitch][col]}` )
+        let val = this.noteArray[this.state.selectedPattern][pitch][col].replace('n','')
 
         // const width = ((640 / val) - 2)
         // elem.style.width = width+'px'
@@ -346,11 +374,11 @@ class Polysynth extends React.Component {
     const note = patterns[selectedPattern].sequence[col]
     const pitch = parseInt(row)+(this.state.octave*12)
 
-    if(!this.noteArray[pitch][col]) this.noteArray[pitch][col] = duration
-    else   this.noteArray[pitch][col] = false
+    if(!this.noteArray[this.state.selectedPattern][pitch][col]) this.noteArray[this.state.selectedPattern][pitch][col] = duration
+    else   this.noteArray[this.state.selectedPattern][pitch][col] = false
 
-    if(this.noteArray[pitch][col]){
-      console.log(duration)
+    if(this.noteArray[this.state.selectedPattern][pitch][col]){
+
       const pitchHz = Tone.Frequency(pitch+24, 'midi')
       this.synth.triggerAttackRelease(pitchHz, duration)
 
@@ -377,10 +405,12 @@ class Polysynth extends React.Component {
 
   }
 
+
   render(){
     const {id} = this.props
+    const {patternIndex, patternChain, display, octave, duration, durationIndex} = this.state
     return (
-      <div id={`poly-${id}`} className={`polysynth ${this.state.display}`}>
+      <div id={`poly-${id}`} className={`polysynth ${display}`}>
         <div className='inner'>
           <h1>Polysynth</h1>
           <button onClick={()=>this.handleControlChange(1,'preset')}> Preset1</button>
@@ -388,25 +418,35 @@ class Polysynth extends React.Component {
         </div>
         <div className='sequencer'>
           <div className='controls'>
-            <div className='button' onClick={()=>this.handleControlChange(this.state.octave, 'octaveInc')}>8ve+</div>
-            <div className='button' onClick={()=>this.handleControlChange(this.state.octave, 'octaveDec')}>8ve-</div>
-            <div className='button'>{this.state.octave}</div>
+            {thirteenArr.map((x, i)=>{
+              const pat = patternNames[patternChain[i]]
+              return<div
+                key={i}
+                className={`button ${pat ? '':'hidden'} ${patternIndex===i ? 'active':'' }`}
+              >{pat}</div>
+            })
+            }
+          </div>
+          <div className='controls'>
+            <div className='button' onClick={()=>this.handleControlChange(octave, 'octaveInc')}>8ve+</div>
+            <div className='button' onClick={()=>this.handleControlChange(octave, 'octaveDec')}>8ve-</div>
+            <div className='button'>{octave}</div>
             <div className='button hidden'></div>
             <div
               className='button'
-              onClick={()=>this.handleControlChange(this.state.durationIndex, 'durationInc')}
+              onClick={()=>this.handleControlChange(durationIndex, 'durationInc')}
             >Length+</div>
             <div
               className='button'
-              onClick={()=>this.handleControlChange(this.state.durationIndex, 'durationDec')}
+              onClick={()=>this.handleControlChange(durationIndex, 'durationDec')}
             >Length-</div>
-            <div className='button'>{this.state.duration}</div>
+            <div className='button'>{duration}</div>
             <div className='button hidden'></div>
-            <div className='button hidden'></div>
-            <div className='button hidden'></div>
-            <div className='button hidden'></div>
-            <div className='button hidden'></div>
-            <div className='button hidden'></div>
+            <div className='button pattern active' onClick={(e)=>this.handleControlChange(0, 'pattern', e)}>A</div>
+            <div className='button pattern' onClick={(e)=>this.handleControlChange(1, 'pattern', e)}>B</div>
+            <div className='button pattern' onClick={(e)=>this.handleControlChange(2, 'pattern', e)}>C</div>
+            <div className='button pattern' onClick={(e)=>this.handleControlChange(3, 'pattern', e)}>D</div>
+            <div className='button' onClick={()=>this.handleControlChange(0, 'patternChain')}>Add</div>
           </div>
           <div className="grid">
             {colArr.map( col => <div key={col} className='col'>
