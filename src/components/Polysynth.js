@@ -33,7 +33,16 @@ const defaultSlider = {
 //   'step': 0,
 //   'value': 1
 // }
-
+const durationArray = [
+  '32n',
+  '16n',
+  '8n',
+  '8n.',
+  '4n',
+  '4n.',
+  '2n',
+  '1n'
+]
 const filterFreqSlider = {
   'size': [20,120],
   'mode': 'absolute',  // 'relative' or 'absolute'
@@ -59,12 +68,38 @@ const settings = {
     decay: 0.2 ,
     sustain: 0.5 ,
     release: 0.9 ,
-    baseFrequency: 75 ,
-    octaves: 5 ,
-    exponent: 2
+    baseFrequency: 1000 ,
+    octaves: 2 ,
+    exponent: 1
   },
   filter: {
-    Q: 1,
+    Q: 6,
+    type: 'lowpass',
+    rolloff: -24
+  }
+}
+const settings2 = {
+  oscillator: {
+    type: 'sawtooth',
+    modulationFrequency: 0.2
+  },
+  envelope: {
+    attack: 0.01,
+    decay: 0.1,
+    sustain: 0.9,
+    release: 0.9
+  },
+  filterEnvelope: {
+    attack: 0.2 ,
+    decay: 0.5 ,
+    sustain: 0.5 ,
+    release: 0.5 ,
+    baseFrequency: 1000 ,
+    octaves: 3 ,
+    exponent: 1
+  },
+  filter: {
+    Q: 6,
     type: 'lowpass',
     rolloff: -24
   }
@@ -107,10 +142,12 @@ class Polysynth extends React.Component {
   constructor(){
     super()
     this.state = {
+      display: 'hidden',
       beat: 0,
       selectedPattern: 0,
       octave: 3,
       duration: '16n',
+      durationIndex: 1,
       patterns: [
         insertPattern(0),
         insertPattern(1),
@@ -126,7 +163,14 @@ class Polysynth extends React.Component {
   removeSynth(){
     this.synth.dispose()
   }
+  show(){
 
+    this.setState({display: 'visible'})
+  }
+  hide(){
+
+    this.setState({display: 'hidden'})
+  }
   stop(){
     console.log('stop', this.props.id)
     this.setState({beat: 0})
@@ -145,33 +189,16 @@ class Polysynth extends React.Component {
   }
 
   componentDidMount(){
-    this.synth = new Tone.PolySynth()
+
+    if(this.props.id === 0) this.setState({display: 'visible'})
+
+    this.synth = new Tone.PolySynth(4,Tone.MonoSynth)
     this.synth.set(settings)
     this.props.attachSynth(this, this.props.id)
 
-    // const that = this
-
-
-    // this.loop = new Tone.Sequence(function(time, beat){
-    //   const {pitch, velocity, duration} = that.state.patterns[that.state.selectedPattern].sequence[beat]
-    //   const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
-    //
-    //   if(velocity) that.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
-    //
-    //   Tone.Draw.schedule(function(){
-    //     that.gridCols.forEach(col => col.classList.remove('active'))
-    //     that.gridCols[beat].classList.add('active')
-    //   }, time)
-    //   // Tone.Transport.schedule(function(time){
-    //   // 	//time = sample accurate time of the event
-    //   // }, "1m");
-    //
-    // }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n').start()
 
     Tone.Transport.scheduleRepeat((time)=>{
-      // note.triggerAttack(time)
       let {beat} = this.state
-
 
       const {pitch, velocity, duration} = this.state.patterns[this.state.selectedPattern].sequence[beat]
       const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
@@ -179,18 +206,12 @@ class Polysynth extends React.Component {
       if(velocity) this.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
 
       Tone.Draw.schedule(()=>{
-        // that.gridCols.forEach(col => col.classList.remove('active'))
-        // that.gridCols[beat].classList.add('active')
         this.drawPosition(beat)
       }, time)
-      // Tone.Transport.schedule(function(time){
-      // 	//time = sample accurate time of the event
-      // }, "1m");
-
-
 
       beat = ++beat % 16
       this.setState({beat})
+
     }, '16n', '0m')
 
     // const mainSettings = Object.keys(this.state.settings)
@@ -216,8 +237,8 @@ class Polysynth extends React.Component {
     //   }
     // }
 
-    const polyElement = document.querySelector(`#poly-${this.props.id}`)
-    this.gridCells = polyElement.querySelectorAll('.cell')
+    this.polyElement = document.querySelector(`#poly-${this.props.id}`)
+    this.gridCells = this.polyElement.querySelectorAll('.cell')
 
     this.gridCells.forEach(cell => {
       cell.addEventListener('click', (e) => this.clickGrid(e))
@@ -227,32 +248,7 @@ class Polysynth extends React.Component {
       if(downBeats.includes(cell.dataset.col)) cell.classList.add('down-beat')
     })
 
-    this.gridCols = polyElement.querySelectorAll('.col')
-
-    const octaveSlider = new Nexus.Slider(`#octaves-${this.props.id}`,{
-      'size': [120,20],
-      'mode': 'relative',  // 'relative' or 'absolute'
-      'min': 0,
-      'max': 5,
-      'step': 1,
-      'value': 3
-    })
-    // octaveSlider.value = this.state.settings[main][second]
-    octaveSlider.on('change', (val)=>this.handleControlChange(val, 'octave') )
-
-    const durationSlider = new Nexus.Slider(`#duration-${this.props.id}`,{
-      'size': [120,20],
-      'mode': 'relative',  // 'relative' or 'absolute'
-      'min': 0,
-      'max': 5,
-      'step': 1,
-      'value': 1
-    })
-    // durationSlider.value = this.state.settings[main][second]
-    durationSlider.on('change', (val)=>this.handleControlChange(val, 'duration') )
-
-    // const beats = new Array(16).fill(0)
-    // this.noteArray = new Array(12*5).fill(JSON.parse(JSON.stringify(beats)))
+    this.gridCols = this.polyElement.querySelectorAll('.col')
 
     this.noteArray = []
     for (let i = 0; i <= 72; i++) {
@@ -265,53 +261,43 @@ class Polysynth extends React.Component {
 
   handleControlChange(val, name){
     let value
-
+    let index
     switch(name){
-      case 'octave':
-        this.setState({octave: val})
-        this.drawGrid()
+      case 'octaveInc':
 
+        value = (val === 5) ? val : ++val
+        this.setState({octave: value}, this.drawGrid)
         break
 
-      case 'duration':
+      case 'octaveDec':
+        value = (val === 0) ? val : --val
+        this.setState({octave: value}, this.drawGrid)
+        break
+
+      case 'durationInc':
+        index = (val === durationArray.length-1) ? val : ++val
+        value = durationArray[index]
+        this.setState({duration: value, durationIndex: val})
+        break
+
+      case 'durationDec':
+        index = (val === 0) ? val : --val
+        value = durationArray[index]
+        this.setState({duration: value, durationIndex: val})
+        break
+
+      case 'preset':
+        console.log('preset', val)
         switch(val){
-          case 5:
-            console.log('1n')
-            value = '1n'
-            break
-
-          case 4:
-            console.log('2n')
-            value = '2n'
-            break
-
-          case 3:
-            console.log('4n')
-            value = '4n'
+          case 1:
+            this.synth.set(settings)
             break
 
           case 2:
-            console.log('8n')
-            value = '8n'
-
-            break
-
-          case 1:
-            console.log('16n')
-            value = '16n'
-
-            break
-
-          case 0:
-            console.log('32n')
-            value = '32n'
+            this.synth.set(settings2)
             break
 
         }
-
-        // value = (32/(val+1))+'n'
-        this.setState({duration: value})
-        break
     }
 
   }
@@ -331,52 +317,35 @@ class Polysynth extends React.Component {
       if(this.noteArray[pitch][col]){
         const elem = document.createElement('div')
         elem.classList.add('note', `d${this.noteArray[pitch][col]}` )
-        const val = this.noteArray[pitch][col].replace('n','')
+        let val = this.noteArray[pitch][col].replace('n','')
 
-        const width = ((640 / val) - 2)
-        elem.style.width = width+'px'
+        // const width = ((640 / val) - 2)
+        // elem.style.width = width+'px'
+        const dotted = val.includes('.')
+        val = val.replace('.','')
+
+        let width = ((16 / val) *100)
+        if (dotted) width = width + width/2
+
+        let border = (((16 / val)-1) *2)
+        if (dotted) border = border + border/2
+
+        elem.style.width = `calc(${width}% + ${border}px)`
         cell.appendChild(elem)
 
       }
     })
   }
-  // mouseoverGrid(e){
-  //   // console.log(e.currentTarget)
-  //   const cell = e.currentTarget
-  //   const {duration} = this.state
-  //
-  //   // cell.classList.remove('active')
-  //   const delem = cell.querySelector('.note')
-  //   if(delem) cell.removeChild(delem)
-  //
-  //   const elem = document.createElement('div')
-  //   console.log('duration', duration)
-  //   elem.classList.add('note', duration )
-  //   // elem.addEventListener('mouseout', (e) => {
-  //   //   console.log('this', this)
-  //   //   this.mouseoutGrid(e)
-  //   // })
-  //
-  //   cell.appendChild(elem)
-  //
-  //
-  //
-  // }
-  // mouseoutGrid(e){
-  //   console.log(e.currentTarget)
-  //   e.currentTarget.parentNode.removeChild(e.currentTarget)
-  //   // this.drawGrid()
-  // }
+
   clickGrid(e){
 
     const {col, row} = e.currentTarget.dataset
     const {selectedPattern, duration} = this.state
-    // const elem = e.currentTarget
+
     const patterns = [...this.state.patterns]
     const note = patterns[selectedPattern].sequence[col]
     const pitch = parseInt(row)+(this.state.octave*12)
 
-    // this.noteArray[pitch][col] = !this.noteArray[pitch][col]
     if(!this.noteArray[pitch][col]) this.noteArray[pitch][col] = duration
     else   this.noteArray[pitch][col] = false
 
@@ -411,55 +380,41 @@ class Polysynth extends React.Component {
   render(){
     const {id} = this.props
     return (
-      <div id={`poly-${id}`} className='polysynth'>
+      <div id={`poly-${id}`} className={`polysynth ${this.state.display}`}>
         <div className='inner'>
           <h1>Polysynth</h1>
-
-          {/*<div id={`oscillatorType${this.props.id}`}></div>
-
-          <div className="controls">
-            <div className="control-container">
-              <div id={`envelope.attack${this.props.id}`}></div>
-              <div id={`envelope.decay${this.props.id}`}></div>
-              <div id={`envelope.sustain${this.props.id}`}></div>
-              <div id={`envelope.release${this.props.id}`}></div>
-            </div>
-            <div className="control-container">
-              <div id={`filterEnvelope.attack${this.props.id}`}></div>
-              <div id={`filterEnvelope.decay${this.props.id}`}></div>
-              <div id={`filterEnvelope.sustain${this.props.id}`}></div>
-              <div id={`filterEnvelope.release${this.props.id}`}></div>
-              <div id={`filterEnvelope.baseFrequency${this.props.id}`}></div>
-            </div>
+          <button onClick={()=>this.handleControlChange(1,'preset')}> Preset1</button>
+          <button onClick={()=>this.handleControlChange(2,'preset')}> Preset2</button>
+        </div>
+        <div className='sequencer'>
+          <div className='controls'>
+            <div className='button' onClick={()=>this.handleControlChange(this.state.octave, 'octaveInc')}>8ve+</div>
+            <div className='button' onClick={()=>this.handleControlChange(this.state.octave, 'octaveDec')}>8ve-</div>
+            <div className='button'>{this.state.octave}</div>
+            <div className='button hidden'></div>
+            <div
+              className='button'
+              onClick={()=>this.handleControlChange(this.state.durationIndex, 'durationInc')}
+            >Length+</div>
+            <div
+              className='button'
+              onClick={()=>this.handleControlChange(this.state.durationIndex, 'durationDec')}
+            >Length-</div>
+            <div className='button'>{this.state.duration}</div>
+            <div className='button hidden'></div>
+            <div className='button hidden'></div>
+            <div className='button hidden'></div>
+            <div className='button hidden'></div>
+            <div className='button hidden'></div>
+            <div className='button hidden'></div>
           </div>
-          <div className="controls">
-            <div className="notes">
-              <div className="control-container">
-                {this.state.patterns[this.state.selectedPattern].sequence.map((beat, i)=><div key={i} id={`pitch-${this.props.id}-${i}`}></div>)}
-              </div>
-            </div>
-            <div className="velocities">
-              <div className="control-container">
-                {this.state.patterns[this.state.selectedPattern].sequence.map((beat, i)=><div key={i} id={`velocity-${this.props.id}-${i}`}></div>)}
-              </div>
-            </div>
-          </div>*/}
-          <div id={`octaves-${id}`} className="octaves"></div>
-          <div id={`duration-${id}`} className="duration"></div>
           <div className="grid">
             {colArr.map( col => <div key={col} className='col'>
               {rowArr.map( row =><div key={row} className='cell' data-col={col} data-row={row}></div>)}
             </div>)}
           </div>
-          {/*<div className="patterns">
-            <div className="control-container pattern">
-              {this.state.patterns.map((beat, i)=><div key={i} id={`pattern-${this.props.id}-${i}`}></div>)}
-            </div>
-            <div className="control-container pattern">
-              {this.state.patterns.map((beat, i)=><div key={i} id={`add-${this.props.id}-${i}`}></div>)}
-            </div>
-          </div>*/}
         </div>
+
       </div>
     )
   }

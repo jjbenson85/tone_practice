@@ -3,6 +3,8 @@ import Tone from 'tone'
 import Nexus from 'nexusui'
 
 // import Nexus from '../js/NexusUI'
+import '../scss/mixer.scss'
+
 
 const defaultSlider = {
   'size': [40,240],
@@ -282,7 +284,7 @@ class Mixer extends React.Component {
 
   render(){
     return (
-      <div className='mixer'>
+      <div id='mixer' className='mixer'>
         <h1>Mixer</h1>
         <div className="channels">
 

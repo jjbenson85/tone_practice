@@ -1,0 +1,50 @@
+.mixer{
+  // position: fixed;
+  // bottom: 0;
+  height: 100%;
+  width: 100vw;
+  background-color: grey;
+  .channel{
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    border: 1px solid black;
+    .label{
+      height: 1rem;
+    }
+    .mute-solo{
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      .mute{
+        height: 25px;
+        width: 25px;
+        background-color: orange;
+        &.active{
+            background-color: red;
+        }
+      }
+      .solo{
+        height: 25px;
+        width: 25px;
+        background-color: lightgreen;
+        &.active{
+          background-color: green;
+        }
+      }
+    }
+    .level-container{
+      display: flex;
+      flex-direction: column-reverse;
+      .level{
+        position: relative;
+        bottom: 0;
+        width: 20px;
+        background-color: green;
+        height:50px;
+      }
+    }
+  }
+}

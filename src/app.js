@@ -68,7 +68,27 @@ class App extends React.Component {
 
     this.setState({toneInstruments, instruments})
   }
+  showSynth(i, e){
+    console.log(e)
+    const tracks = document.querySelectorAll('.track')
+    tracks.forEach(track=>track.classList.remove('active'))
+    e.currentTarget.classList.add('active')
+    this.state.toneInstruments.forEach(inst => inst.hide())
+    this.state.toneInstruments[i].show()
+  }
+  buildTrack(inst, i) {
+    return <div key={i} className='track' onClick={(e)=>this.showSynth(i, e)}>{inst}</div>
 
+    // switch(inst){
+    //   case 'Monosynth':
+    //     break
+    //
+    //
+    //   case 'Polysynth':
+    //     <div key={i}>Polysynth</div>
+    //     break
+    // }
+  }
   buildInstrument(inst, i){
     switch(inst){
       case 'Monosynth':
@@ -88,21 +108,45 @@ class App extends React.Component {
     }
   }
 
+  showRack(){
+    document.querySelector('#mixer').style.display = 'none'
+
+  }
+  showMixer(){
+    document.querySelector('#mixer').style.display = 'block'
+  }
 
   render() {
 
     return (
-      <div>Hello World!
-        <button onClick={()=>this.playSound()}>PLAY</button>
-        <button onClick={()=>this.stopSound()}>STOP</button>
-        <button onClick={()=>this.addSynth()}>ADD</button>
-        <button onClick={()=>this.addPolySynth()}>Add Poly</button>
-        <button onClick={()=>this.removeSynth()}>REMOVE</button>
-        <div className="rack">
-          {this.state.instruments.map( (inst,i) => this.buildInstrument(inst, i))}
+      <div className='main'>
+        <div className='transport-bar'>
+          <div className='left'>
+
+          </div>
+          <div className='center'>
+            <button onClick={()=>this.playSound()}>PLAY</button>
+            <button onClick={()=>this.stopSound()}>STOP</button>
+
+          </div>
+          <div className='right'>
+            <button onClick={()=>this.addSynth()}>Add Mono</button>
+            <button onClick={()=>this.addPolySynth()}>Add Poly</button>
+            <button onClick={()=>this.removeSynth()}>REMOVE</button>
+
+          </div>
+          {/*<button onClick={()=>this.showMixer()}>Mixer</button>
+            <button onClick={()=>this.showRack()}>Rack</button>*/}
+        </div>
+        <div className='work-space'>
+          <div className='side-panel'>
+            {this.state.instruments.map( (inst,i) => this.buildTrack(inst, i))}
+          </div>
+          <div className="rack">
+            {this.state.instruments.map( (inst,i) => this.buildInstrument(inst, i))}
+          </div>
         </div>
         <Mixer id="1" toneInstruments={this.state.toneInstruments} len={this.state.toneInstruments.length}/>
-
       </div>
     )
   }
