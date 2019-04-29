@@ -87,6 +87,8 @@ class Mixer extends React.Component {
     this.buildChannels = this.buildChannels.bind(this)
     this.connectInstrumentsToChannels = this.connectInstrumentsToChannels.bind(this)
     this.handleControlChange = this.handleControlChange.bind(this)
+
+    this.stopDecayLevels = this.stopDecayLevels.bind(this)
   }
 
 
@@ -228,7 +230,12 @@ class Mixer extends React.Component {
     labels.forEach(label=>{
       label.innerText=''
     })
-    this.props.toneInstruments.forEach((inst,i) => {
+    const instruments = this.props.toneInstruments.slice(1)
+    // this.props.toneInstruments.forEach((inst,i) => {
+    instruments.forEach((inst,i) => {
+      // Skip mixer in toneInstruments
+      // if(i === 0) return
+
       const chnl = this.channelArr[i]
       inst.synth.connect(chnl)
       document.querySelector(`#label-${this.props.id}-${i}`).innerText = i
@@ -236,9 +243,40 @@ class Mixer extends React.Component {
     const instrumentCount = this.props.toneInstruments.length
     this.setState({instrumentCount})
   }
+  updateLevels(){
+    // this.levelElemArr.forEach((level,i) => {
+    //   const signal = this.meterArr[i].getLevel()
+    //   if(signal < -52) {
+    //     level.style.height = '0px'
+    //     return
+    //   }
+    //   level.style.height = (Tone.dbToGain(signal)*400)+'px'
+    // })
+
+    //Optimize
+
+    return this.levelElemArr.reduce((acc, level, i) => {
+      const signal = this.meterArr[i].getLevel()
+
+      if(i===0) acc = false
+
+      if(signal < -52) {
+        level.style.height = '0%'
+        return acc || false
+      }
+      level.style.height = (Tone.dbToGain(signal)*100)+'%'
+      return true
+      
+    }, true)
+
+
+  }
   componentDidMount(){
-    this.levelElemArr = document.querySelectorAll('.level')
-    const that = this
+    this.props.attachSynth(this, this.props.id)
+
+    const levelElems = document.querySelectorAll('.level')
+    this.levelElemArr = Array.from(levelElems)
+    // const this = this
     // new Tone.Loop(function(time){
     //   Tone.Draw.schedule(function(){
     //     that.levelElemArr.forEach((level,i) => {
@@ -248,21 +286,47 @@ class Mixer extends React.Component {
     //
     // }, '64n').start
 
-    Tone.Transport.scheduleRepeat(function(time){
-      Tone.Draw.schedule(function(){
-        that.levelElemArr.forEach((level,i) => {
-          const signal = that.meterArr[i].getLevel()
-          if(signal < -52) {
-            level.style.height = '0px'
-            return
-          }
-          level.style.height = (Tone.dbToGain(signal)*400)+'px'
-        })
+    Tone.Transport.scheduleRepeat((time)=>{
+      Tone.Draw.schedule(()=>{
+        this.updateLevels()
       }, time)
     }, '64n')
 
     this.buildChannels()
     this.connectInstrumentsToChannels()
+
+  }
+
+  show(){
+
+    this.setState({display: 'visible'})
+  }
+  hide(){
+
+    this.setState({display: 'hidden'})
+  }
+
+  stopDecayLevels(){
+    const decaying = this.updateLevels()
+    if(decaying) {
+      console.log('decaying',decaying)
+      setTimeout(this.stopDecayLevels, 20)
+    }
+  }
+  stop(){
+    // this.setState({beat: 0})
+    // Tone.Draw.schedule(()=>{
+    //
+    // })
+    // this.stopDecayIntervalCounter = 100
+    // const interval = setInterval( ()=> {
+    //   if(!this.stopDecayIntervalCounter) clearInterval(interval)
+    //   this.stopDecayIntervalCounter--
+    //   const decaying = this.updateLevels()
+    //   console.log(decaying)
+    // }, 20)
+
+    this.stopDecayLevels()
 
   }
 
@@ -283,8 +347,9 @@ class Mixer extends React.Component {
 
 
   render(){
+    const {display} = this.state
     return (
-      <div id='mixer' className='mixer'>
+      <div id='mixer' className={`mixer ${display}`}>
         <h1>Mixer</h1>
         <div className="channels">
 

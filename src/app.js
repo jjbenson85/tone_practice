@@ -16,7 +16,7 @@ class App extends React.Component {
     super()
 
     this.state={
-      instruments: ['Polysynth'],
+      instruments: ['Mixer','Polysynth'],
       toneInstruments: []
     }
 
@@ -79,6 +79,14 @@ class App extends React.Component {
   }
   buildInstrument(inst, i){
     switch(inst){
+      case 'Mixer':
+        return <Mixer
+          key={i}
+          id={i}
+          toneInstruments={this.state.toneInstruments}
+          attachSynth={this.attachSynth}
+        />
+
       case 'Monosynth':
         return <Monosynth
           key={i}
@@ -86,6 +94,7 @@ class App extends React.Component {
           toneInstruments={this.state.toneInstruments}
           attachSynth={this.attachSynth}
         />
+
       case 'Polysynth':
         return <Polysynth
           key={i}
@@ -96,13 +105,13 @@ class App extends React.Component {
     }
   }
 
-  showRack(){
-    document.querySelector('#mixer').style.display = 'none'
-
-  }
-  showMixer(){
-    document.querySelector('#mixer').style.display = 'block'
-  }
+  // showRack(){
+  //   document.querySelector('#mixer').style.display = 'none'
+  //
+  // }
+  // showMixer(){
+  //   document.querySelector('#mixer').style.display = 'block'
+  // }
 
   render() {
 
@@ -134,7 +143,6 @@ class App extends React.Component {
             {this.state.instruments.map( (inst,i) => this.buildInstrument(inst, i))}
           </div>
         </div>
-        <Mixer id="1" toneInstruments={this.state.toneInstruments} len={this.state.toneInstruments.length}/>
       </div>
     )
   }
