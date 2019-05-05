@@ -1,0 +1,28 @@
+.transport-bar{
+  background-color: #333;
+  position: fixed;
+  z-index: 5;
+  top: 0;
+  height: 40px;
+  width: 100vw;
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  .left, .center, .right{
+    width: 33vw;
+    display: flex;
+    justify-content: center;
+  }
+  .position{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width:100px;
+    border: 1px solid black;
+    background: lightgrey;
+
+
+  }
+}

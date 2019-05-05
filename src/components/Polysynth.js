@@ -1,7 +1,7 @@
 import React from 'react'
 import Tone from 'tone'
-import '../scss/polysynth.scss'
 import GridSequencer from './GridSequencer.js'
+import '../scss/polysynth.scss'
 
 const settings = {
   oscillator: {

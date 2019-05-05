@@ -103,7 +103,7 @@ class Mixer extends React.Component {
   // })
 
   handleControlChange(val, channel, control){
-    console.log('handleControlChange', this.channelArr[channel].pan, this.channelArr[channel].volume )
+    // console.log('handleControlChange', this.channelArr[channel].pan, this.channelArr[channel].volume )
     const channels = [...this.state.channels]
     let value
 
@@ -118,7 +118,7 @@ class Mixer extends React.Component {
       case 'pan':
         channels[channel].pan = val
         this.channelArr[channel].pan.linearRampToValueAtTime(val, +0.1)
-        console.log('pan', val)
+        // console.log('pan', val)
         break
 
       case 'aux1':
@@ -275,7 +275,7 @@ class Mixer extends React.Component {
     this.props.attachSynth(this, this.props.id)
     const sequencer = {}
     this.sequencer = sequencer
-    this.sequencer.stop = ()=>null
+    this.sequencer.stop = ()=>this.stopDecayLevels()
     this.sequencer.start = ()=>null
 
     const levelElems = document.querySelectorAll('.level')
@@ -313,29 +313,11 @@ class Mixer extends React.Component {
   stopDecayLevels(){
     const decaying = this.updateLevels()
     if(decaying) {
-      console.log('decaying',decaying)
       setTimeout(this.stopDecayLevels, 20)
     }
   }
-  stop(){
-    // this.setState({beat: 0})
-    // Tone.Draw.schedule(()=>{
-    //
-    // })
-    // this.stopDecayIntervalCounter = 100
-    // const interval = setInterval( ()=> {
-    //   if(!this.stopDecayIntervalCounter) clearInterval(interval)
-    //   this.stopDecayIntervalCounter--
-    //   const decaying = this.updateLevels()
-    //   console.log(decaying)
-    // }, 20)
 
-    this.stopDecayLevels()
 
-  }
-  start(){
-    null
-  }
 
   componentDidUpdate(){
 

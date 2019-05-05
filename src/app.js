@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom'
 
 import Tone from 'tone'
 
-import Monosynth from './components/Monosynth'
+// import Monosynth from './components/Monosynth'
 import Polysynth from './components/Polysynth'
 import Mixer from './components/Mixer'
+import TransportBar from './components/TransportBar'
 
 import './scss/style.scss'
 
@@ -28,6 +29,10 @@ class App extends React.Component {
     this.stopSynthArr = []
 
     this.attachSynth = this.attachSynth.bind(this)
+    this.startSequencer = this.startSequencer.bind(this)
+    this.stopSequencer = this.stopSequencer.bind(this)
+    this.addPolySynth = this.addPolySynth.bind(this)
+    this.removeSynth = this.removeSynth.bind(this)
 
     // Tone.Transport.loop = true
     // Tone.Transport.loopStart = '0m'
@@ -66,7 +71,7 @@ class App extends React.Component {
 
   removeSynth(){
     this.state.toneInstruments[this.state.toneInstruments.length-1].synth.dispose()
-    this.state.toneInstruments[this.state.toneInstruments.length-1].loop.stop()
+    // this.state.toneInstruments[this.state.toneInstruments.length-1].loop.stop()
     const instruments = this.state.instruments.slice(0, this.state.instruments.length-1)
     const toneInstruments = this.state.toneInstruments.slice(0, this.state.toneInstruments.length-1)
 
@@ -92,13 +97,13 @@ class App extends React.Component {
           attachSynth={this.attachSynth}
         />
 
-      case 'Monosynth':
-        return <Monosynth
-          key={i}
-          id={i}
-          toneInstruments={this.state.toneInstruments}
-          attachSynth={this.attachSynth}
-        />
+      // case 'Monosynth':
+      //   return <Monosynth
+      //     key={i}
+      //     id={i}
+      //     toneInstruments={this.state.toneInstruments}
+      //     attachSynth={this.attachSynth}
+      //   />
 
       case 'Polysynth':
         return <Polysynth
@@ -119,10 +124,17 @@ class App extends React.Component {
   // }
 
   render() {
-
+    const startSequencer = this.startSequencer
+    const stopSequencer = this.stopSequencer
+    const addSynth = this.addSynth
+    const addPolySynth = this.addPolySynth
+    const removeSynth = this.removeSynth
+    const transportControls = {startSequencer, stopSequencer, addSynth, addPolySynth, removeSynth}
     return (
       <div className='main'>
-        <div className='transport-bar'>
+        <TransportBar {...transportControls} />
+        {/*
+          <div className='transport-bar'>
           <div className='left'>
 
           </div>
@@ -137,9 +149,10 @@ class App extends React.Component {
             <button onClick={()=>this.removeSynth()}>REMOVE</button>
 
           </div>
+          */}
           {/*<button onClick={()=>this.showMixer()}>Mixer</button>
             <button onClick={()=>this.showRack()}>Rack</button>*/}
-        </div>
+        {/*</div>*/}
         <div className='work-space'>
           <div className='side-panel'>
             {this.state.instruments.map( (inst,i) => this.buildTrack(inst, i))}
