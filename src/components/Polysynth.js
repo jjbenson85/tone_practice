@@ -1,58 +1,7 @@
 import React from 'react'
 import Tone from 'tone'
-import Nexus from 'nexusui'
 import '../scss/polysynth.scss'
-
-
-const rowArr = Array.from(Array(13), (x,i) => i)
-const colArr = Array.from(Array(16), (x,i) => i)
-
-const patternNames =['A','B','C','D']
-const blackRows = ['1','3','6','8','10']
-const downBeats = ['0','4','8','12']
-
-const defaultSlider = {
-  'size': [20,120],
-  'mode': 'absolute',  // 'relative' or 'absolute'
-  'min': 0.01,
-  'max': 1,
-  'step': 0,
-  'value': 0
-}
-// const pitchSlider = {
-//   'size': [20,120],
-//   'mode': 'absolute',  // 'relative' or 'absolute'
-//   'min': 32,
-//   'max': 96,
-//   'step': 1,
-//   'value': 64
-// }
-// const velocitySlider = {
-//   'size': [20,120],
-//   'mode': 'absolute',  // 'relative' or 'absolute'
-//   'min': 0,
-//   'max': 1,
-//   'step': 0,
-//   'value': 1
-// }
-const durationArray = [
-  '32n',
-  '16n',
-  '8n',
-  '8n.',
-  '4n',
-  '4n.',
-  '2n',
-  '1n'
-]
-const filterFreqSlider = {
-  'size': [20,120],
-  'mode': 'absolute',  // 'relative' or 'absolute'
-  'min': 1,
-  'max': 150,
-  'step': 0,
-  'value': 150
-}
+import GridSequencer from './GridSequencer.js'
 
 const settings = {
   oscillator: {
@@ -82,240 +31,103 @@ const settings = {
 }
 const settings2 = {
   oscillator: {
-    type: 'sawtooth',
+    type: 'pwm',
     modulationFrequency: 0.2
   },
   envelope: {
     attack: 0.01,
     decay: 0.1,
     sustain: 0.9,
-    release: 0.9
+    release: 0.01
   },
   filterEnvelope: {
-    attack: 0.2 ,
-    decay: 0.5 ,
-    sustain: 0.5 ,
-    release: 0.5 ,
+    attack: 0.01 ,
+    decay: 0.01 ,
+    sustain: 1 ,
+    release: 0.01 ,
     baseFrequency: 1000 ,
-    octaves: 3 ,
-    exponent: 1
+    octaves: 3
+  }
+}
+const settings3 = {
+  oscillator: {
+    type: 'pwm',
+    modulationFrequency: 0.2
+  },
+  envelope: {
+    attack: 0.001,
+    decay: 0.1,
+    sustain: 1,
+    release: 0.001
+  },
+  filterEnvelope: {
+    attack: 0.001 ,
+    decay: 0.01 ,
+    sustain: 0 ,
+    release: 0.001 ,
+    baseFrequency: 50 ,
+    octaves: 7
+  }
+}
+
+const settings4 = {
+  oscillator: {
+    type: 'fmsquare',
+    modulationType: 'sawtooth',
+    harmonicity: 0.3456
+  },
+  envelope: {
+    attack: 0.001,
+    decay: 0.1,
+    sustain: 0,
+    release: 0.001
+  },
+  filterEnvelope: {
+    attack: 0.001 ,
+    decay: 0.1 ,
+    sustain: 0 ,
+    release: 0.001 ,
+    baseFrequency: 400 ,
+    octaves: 1
   },
   filter: {
-    Q: 6,
-    type: 'lowpass',
-    rolloff: -24
+    type: 'highpass'
   }
 }
-
-const noteOff = {
-  beat: 0,
-  pitch: [],
-  velocity: [],
-  duration: []
-}
-
-const sequence = [
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff,
-  noteOff
-]
-
-const insertPattern = id => {
-  return {
-    id,
-    sequence: JSON.parse(JSON.stringify(sequence))
-  }
-}
-
-const thirteenArr= new Array(13).fill(0)
 
 class Polysynth extends React.Component {
   constructor(){
     super()
     this.state = {
       display: 'hidden',
-      beat: 0,
-      selectedPattern: 0,
-      octave: 3,
-      duration: '16n',
-      durationIndex: 1,
-      patternIndex: 0,
-      patternChain: [0],
-      patterns: [
-        insertPattern(0),
-        insertPattern(1),
-        insertPattern(2),
-        insertPattern(3)
-      ],
       settings
     }
-
+    this.attachSequencer = this.attachSequencer.bind(this)
   }
-
+  attachSequencer(sequencer){
+    this.sequencer = sequencer
+  }
   removeSynth(){
     this.synth.dispose()
   }
   show(){
-
     this.setState({display: 'visible'})
   }
   hide(){
-
     this.setState({display: 'hidden'})
-  }
-  stop(){
-    this.setState({beat: 0})
-    Tone.Draw.schedule(()=>{
-      this.removePostion()
-    })
-  }
-
-  removePostion(){
-    this.gridCols.forEach(col => col.classList.remove('active') )
-
-  }
-  drawPosition(beat){
-    this.removePostion()
-    this.gridCols[beat].classList.add('active')
   }
 
   componentDidMount(){
 
     if(this.props.id === 0) this.setState({display: 'visible'})
-
     this.synth = new Tone.PolySynth(4,Tone.MonoSynth)
     this.synth.set(settings)
     this.props.attachSynth(this, this.props.id)
 
-
-    Tone.Transport.scheduleRepeat((time)=>{
-      let {beat, patternIndex} = this.state
-      const {patterns, patternChain} = this.state
-
-      const {pitch, velocity, duration} = patterns[patternChain[patternIndex]].sequence[beat]
-      const pitchHz = pitch.map((hz) => Tone.Frequency(hz+24, 'midi'))
-
-      if(velocity) this.synth.triggerAttackRelease(pitchHz, duration, time, velocity)
-
-      Tone.Draw.schedule(()=>{
-        this.drawPosition(beat)
-      }, time)
-
-      beat = ++beat % 16
-      if(beat===15){
-        patternIndex++
-
-        if(patternIndex > patternChain.length-1) patternIndex = 0
-
-        this.setState({patternIndex})
-      }
-      this.setState({beat})
-
-    }, '16n', '0m')
-
-    // const mainSettings = Object.keys(this.state.settings)
-    //
-    // for (const mainSetting in mainSettings){
-    //   const main = mainSettings[mainSetting]
-    //   if(main === 'oscillator' || main === 'filter') continue
-    //
-    //   const secondarySettings = Object.keys(this.state.settings[main])
-    //   for(const secSetting in secondarySettings){
-    //     const second = secondarySettings[secSetting]
-    //     if(second === 'octaves' || second === 'exponent') continue
-    //
-    //     const name = main+'.'+second
-    //     if(second === 'baseFrequency'){
-    //       this[name] = new Nexus.Slider(`#${name + this.props.id}`,filterFreqSlider)
-    //     }else{
-    //       this[name] = new Nexus.Slider(`#${name + this.props.id}`,defaultSlider)
-    //     }
-    //     this[name].value = this.state.settings[main][second]
-    //     this[name].on('change', (val)=>this.handleControlChange(val, name) )
-    //
-    //   }
-    // }
-
-    this.polyElement = document.querySelector(`#poly-${this.props.id}`)
-    this.gridCells = this.polyElement.querySelectorAll('.cell')
-
-    this.gridCells.forEach(cell => {
-      cell.addEventListener('click', (e) => this.clickGrid(e))
-      // cell.addEventListener('mouseover', (e) => this.mouseoverGrid(e))
-
-      if(blackRows.includes(cell.dataset.row)) cell.classList.add('black')
-      if(downBeats.includes(cell.dataset.col)) cell.classList.add('down-beat')
-    })
-
-    this.gridCols = this.polyElement.querySelectorAll('.col')
-
-    this.noteArray = []
-    for (let x = 0; x <= 4; x++) {
-      this.noteArray[x] = []
-      for (let i = 0; i <= 72; i++) {
-        this.noteArray[x][i] = []
-        for (var j = 0; j < 16; j++) {
-          this.noteArray[x][i][j] = false
-        }
-      }
-    }
   }
 
-  handleControlChange(val, name, e){
-    let value
-    let index
+  handleControlChange(val, name){
     switch(name){
-      case 'octaveInc':
-
-        value = (val === 5) ? val : ++val
-        this.setState({octave: value}, this.drawGrid)
-        break
-
-      case 'octaveDec':
-        value = (val === 0) ? val : --val
-        this.setState({octave: value}, this.drawGrid)
-        break
-
-      case 'durationInc':
-        index = (val === durationArray.length-1) ? val : ++val
-        value = durationArray[index]
-        this.setState({duration: value, durationIndex: val})
-        break
-
-      case 'durationDec':
-        index = (val === 0) ? val : --val
-        value = durationArray[index]
-        this.setState({duration: value, durationIndex: val})
-        break
-
-      case 'pattern':
-        //optimize
-        document.querySelectorAll('.button.pattern').forEach(x => x.classList.remove('active'))
-        e.currentTarget.classList.add('active')
-        this.setState({selectedPattern: val}, this.drawGrid)
-        break
-
-      case 'patternChain':
-        value = [...this.state.patternChain]
-        value.push(this.state.selectedPattern)
-        this.setState({patternChain: value})
-
-        break
-
-      //This is a synth setting, lose when sequencer made component
       case 'preset':
         switch(val){
           case 1:
@@ -326,135 +138,32 @@ class Polysynth extends React.Component {
             this.synth.set(settings2)
             break
 
+          case 3:
+            this.synth.set(settings3)
+            break
+
+          case 4:
+            this.synth.set(settings4)
+            break
+
         }
+        break
     }
-
   }
-
-  drawGrid(){
-    const {octave} = this.state
-    this.gridCells.forEach( cell => {
-      const {row, col} = cell.dataset
-      const pitch = parseInt(row) + (octave*12)
-
-      cell.classList.remove('active')
-      const delem = cell.querySelector('.note')
-      if(delem) cell.removeChild(delem)
-
-
-      if(this.noteArray[this.state.selectedPattern][pitch][col]){
-        const elem = document.createElement('div')
-        elem.classList.add('note', `d${this.noteArray[this.state.selectedPattern][pitch][col]}` )
-        let val = this.noteArray[this.state.selectedPattern][pitch][col].replace('n','')
-
-        // const width = ((640 / val) - 2)
-        // elem.style.width = width+'px'
-        const dotted = val.includes('.')
-        val = val.replace('.','')
-
-        let width = ((16 / val) *100)
-        if (dotted) width = width + width/2
-
-        let border = (((16 / val)-1) *2)
-        if (dotted) border = border + border/2
-
-        elem.style.width = `calc(${width}% + ${border}px)`
-        cell.appendChild(elem)
-
-      }
-    })
-  }
-
-  clickGrid(e){
-
-    const {col, row} = e.currentTarget.dataset
-    const {selectedPattern, duration} = this.state
-
-    const patterns = [...this.state.patterns]
-    const note = patterns[selectedPattern].sequence[col]
-    const pitch = parseInt(row)+(this.state.octave*12)
-
-    if(!this.noteArray[this.state.selectedPattern][pitch][col]) this.noteArray[this.state.selectedPattern][pitch][col] = duration
-    else   this.noteArray[this.state.selectedPattern][pitch][col] = false
-
-    if(this.noteArray[this.state.selectedPattern][pitch][col]){
-
-      const pitchHz = Tone.Frequency(pitch+24, 'midi')
-      this.synth.triggerAttackRelease(pitchHz, duration)
-
-      note.pitch.push(pitch)
-      note.duration.push(duration)
-      note.velocity = 1
-
-    }else{
-
-      // Get the index of this pitch in the pitch array
-      const index = note.pitch.indexOf(pitch)
-
-      //remove note from pitch array
-      note.pitch.splice(index, 1)
-      note.duration.splice(index, 1)
-
-      //If no noes left to be played this beat, turn off with velocity 0
-      if(note.pitch.length===0) note.velocity = 0
-    }
-
-    this.drawGrid()
-    this.setState({patterns})
-
-
-  }
-
 
   render(){
     const {id} = this.props
-    const {patternIndex, patternChain, display, octave, duration, durationIndex} = this.state
+    const {display} = this.state
     return (
       <div id={`poly-${id}`} className={`polysynth ${display}`}>
         <div className='inner'>
           <h1>Polysynth</h1>
           <button onClick={()=>this.handleControlChange(1,'preset')}> Preset1</button>
           <button onClick={()=>this.handleControlChange(2,'preset')}> Preset2</button>
+          <button onClick={()=>this.handleControlChange(3,'preset')}> Preset3</button>
+          <button onClick={()=>this.handleControlChange(4,'preset')}> Preset4</button>
         </div>
-        <div className='sequencer'>
-          <div className='controls'>
-            {thirteenArr.map((x, i)=>{
-              const pat = patternNames[patternChain[i]]
-              return<div
-                key={i}
-                className={`button ${pat ? '':'hidden'} ${patternIndex===i ? 'active':'' }`}
-              >{pat}</div>
-            })
-            }
-          </div>
-          <div className='controls'>
-            <div className='button' onClick={()=>this.handleControlChange(octave, 'octaveInc')}>8ve+</div>
-            <div className='button' onClick={()=>this.handleControlChange(octave, 'octaveDec')}>8ve-</div>
-            <div className='button'>{octave}</div>
-            <div className='button hidden'></div>
-            <div
-              className='button'
-              onClick={()=>this.handleControlChange(durationIndex, 'durationInc')}
-            >Length+</div>
-            <div
-              className='button'
-              onClick={()=>this.handleControlChange(durationIndex, 'durationDec')}
-            >Length-</div>
-            <div className='button'>{duration}</div>
-            <div className='button hidden'></div>
-            <div className='button pattern active' onClick={(e)=>this.handleControlChange(0, 'pattern', e)}>A</div>
-            <div className='button pattern' onClick={(e)=>this.handleControlChange(1, 'pattern', e)}>B</div>
-            <div className='button pattern' onClick={(e)=>this.handleControlChange(2, 'pattern', e)}>C</div>
-            <div className='button pattern' onClick={(e)=>this.handleControlChange(3, 'pattern', e)}>D</div>
-            <div className='button' onClick={()=>this.handleControlChange(0, 'patternChain')}>Add</div>
-          </div>
-          <div className="grid">
-            {colArr.map( col => <div key={col} className='col'>
-              {rowArr.map( row =><div key={row} className='cell' data-col={col} data-row={row}></div>)}
-            </div>)}
-          </div>
-        </div>
-
+        <GridSequencer parent={this} id={id} attachSequencer={this.attachSequencer}/>
       </div>
     )
   }

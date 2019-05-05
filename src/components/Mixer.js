@@ -266,13 +266,17 @@ class Mixer extends React.Component {
       }
       level.style.height = (Tone.dbToGain(signal)*100)+'%'
       return true
-      
+
     }, true)
 
 
   }
   componentDidMount(){
     this.props.attachSynth(this, this.props.id)
+    const sequencer = {}
+    this.sequencer = sequencer
+    this.sequencer.stop = ()=>null
+    this.sequencer.start = ()=>null
 
     const levelElems = document.querySelectorAll('.level')
     this.levelElemArr = Array.from(levelElems)
@@ -328,6 +332,9 @@ class Mixer extends React.Component {
 
     this.stopDecayLevels()
 
+  }
+  start(){
+    null
   }
 
   componentDidUpdate(){

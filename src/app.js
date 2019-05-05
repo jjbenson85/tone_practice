@@ -6,7 +6,6 @@ import Tone from 'tone'
 import Monosynth from './components/Monosynth'
 import Polysynth from './components/Polysynth'
 import Mixer from './components/Mixer'
-// import GridSequencer from './components/GridSequencer'
 
 import './scss/style.scss'
 
@@ -30,20 +29,26 @@ class App extends React.Component {
 
     this.attachSynth = this.attachSynth.bind(this)
 
-    Tone.Transport.loop = true
-    Tone.Transport.loopStart = '0m'
-    Tone.Transport.loopEnd = '4m'
-  }
-
-
-  playSound(){
-    Tone.Transport.start()
+    // Tone.Transport.loop = true
+    // Tone.Transport.loopStart = '0m'
+    // Tone.Transport.loopEnd = '4m'
+    // Tone.Transport.start()
 
   }
-  stopSound(){
+
+
+  startSequencer(){
+    // Tone.Transport.stop()
+    // Tone.Transport.position = '0:0:0'
+
+    Tone.Transport.start('+0.1')
+    // this.state.toneInstruments.forEach(inst => inst.start())
+    this.state.toneInstruments.forEach(inst => inst.sequencer.start('+0.1'))
+  }
+  stopSequencer(){
     Tone.Transport.stop()
-    Tone.Transport.position = '0:0:0'
-    this.state.toneInstruments.forEach(inst => inst.stop())
+    // this.state.toneInstruments.forEach(inst => inst.stop())
+    this.state.toneInstruments.forEach(inst => inst.sequencer.stop())
   }
   addSynth(){
     const instruments = [...this.state.instruments, 'Monosynth']
@@ -122,8 +127,8 @@ class App extends React.Component {
 
           </div>
           <div className='center'>
-            <button onClick={()=>this.playSound()}>PLAY</button>
-            <button onClick={()=>this.stopSound()}>STOP</button>
+            <button onClick={()=>this.startSequencer()}>PLAY</button>
+            <button onClick={()=>this.stopSequencer()}>STOP</button>
 
           </div>
           <div className='right'>

@@ -234,14 +234,15 @@ class Monosynth extends React.Component {
   removeSynth(){
     this.synth.dispose()
   }
-  stop(){
-    console.log('stop', this.props.id)
-  }
+  // stop(){
+  //   console.log('stop', this.props.id)
+  // }
   componentDidMount(){
     // const currentPattern = []
     // currentPattern.push(this.state.patterns[0])
     // this.setState({currentPattern})
     const that = this
+    
 
     this.loop = new Tone.Sequence(function(time, beat){
       let {currentPattern} = that.state
