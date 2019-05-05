@@ -2,7 +2,8 @@ import React from 'react'
 import Tone from 'tone'
 import GridSequencer from './GridSequencer.js'
 import PolySynthInterface from './PolySynthInterface.js'
-import '../scss/polysynth.scss'
+import DrumMachineInterface from './DrumMachineInterface.js'
+import '../scss/instrument.scss'
 
 const settings = {
   oscillator: {
@@ -96,7 +97,7 @@ const settings4 = {
   }
 }
 
-class PolySynth extends React.Component {
+class Instrument extends React.Component {
   constructor(){
     super()
     this.state = {
@@ -104,6 +105,7 @@ class PolySynth extends React.Component {
       settings
     }
     this.attachSequencer = this.attachSequencer.bind(this)
+    this.handleControlChange = this.handleControlChange.bind(this)
   }
   attachSequencer(sequencer){
     this.sequencer = sequencer
@@ -119,14 +121,50 @@ class PolySynth extends React.Component {
   }
 
   componentDidMount(){
+    const x = 9
 
     if(this.props.id === 0) this.setState({display: 'visible'})
-    this.synth = new Tone.PolySynth(4,Tone.MonoSynth)
-    this.synth.set(settings)
-    this.props.attachSynth(this, this.props.id)
+
+    switch(this.props.type){
+      case 'PolySynth':
+        this.synth = new Tone.PolySynth(4,Tone.MonoSynth)
+        this.synth.set(settings)
+        this.props.attachSynth(this, this.props.id)
+
+        break
+
+      case 'DrumMachine':
+        this.synth = new Tone.Sampler({
+          'C2': 'assets/wav/sound-'+x+'-1.wav',
+          'C#2': 'assets/wav/sound-'+x+'-2.wav',
+          'D2': 'assets/wav/sound-'+x+'-3.wav',
+          'D#2': 'assets/wav/sound-'+x+'-4.wav',
+          'E2': 'assets/wav/sound-'+x+'-5.wav',
+          'F2': 'assets/wav/sound-'+x+'-6.wav',
+          'F#2': 'assets/wav/sound-'+x+'-7.wav',
+          'G2': 'assets/wav/sound-'+x+'-8.wav',
+          'G#2': 'assets/wav/sound-'+x+'-9.wav',
+          'A2': 'assets/wav/sound-'+x+'-10.wav',
+          'A#2': 'assets/wav/sound-'+x+'-11.wav',
+          'C3': 'assets/wav/sound-'+x+'-12.wav',
+          'C#3': 'assets/wav/sound-'+x+'-13.wav',
+          'D3': 'assets/wav/sound-'+x+'-14.wav',
+          'D#3': 'assets/wav/sound-'+x+'-15.wav',
+          'E3': 'assets/wav/sound-'+x+'-16.wav'
+        })
+        this.props.attachSynth(this, this.props.id)
+        break
+    }
 
   }
-
+  createInterface(type,props){
+    switch(type){
+      case 'PolySynth':
+        return <PolySynthInterface  {...props}/>
+      case 'DrumMachine':
+        return <DrumMachineInterface  {...props}/>
+    }
+  }
   handleControlChange(val, name){
     switch(name){
       case 'preset':
@@ -153,17 +191,17 @@ class PolySynth extends React.Component {
   }
 
   render(){
-    const {id} = this.props
+    const {id, type} = this.props
     const {display} = this.state
     const handleControlChange = this.handleControlChange
     const props = {id, display, handleControlChange}
     return (
-      <div id={`poly-${id}`} className={`polysynth ${display}`}>
-        <PolySynthInterface  {...props}/>
-        <GridSequencer display={display} parent={this} id={id} attachSequencer={this.attachSequencer}/>
+      <div id={`poly-${id}`} className={`instrument ${display}`}>
+        {this.createInterface(type, props)}
+        <GridSequencer type={type} display={display} parent={this} id={id} attachSequencer={this.attachSequencer}/>
       </div>
     )
   }
 }
 
-export default PolySynth
+export default Instrument

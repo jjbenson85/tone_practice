@@ -31,6 +31,7 @@ const TransportBar = (props) => {
       </div>
       <div className='right'>
         <button onClick={()=>props.addPolySynth()}>Add Poly</button>
+        <button onClick={()=>props.addDrumMachine()}>Add Drum</button>
         <button onClick={()=>props.removeSynth()}>REMOVE</button>
 
       </div>

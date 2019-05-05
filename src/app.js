@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom'
 import Tone from 'tone'
 
 // import Monosynth from './components/Monosynth'
-import Polysynth from './components/Polysynth'
+// import PolySynth from './components/PolySynth'
+import Instrument from './components/Instrument'
 import Mixer from './components/Mixer'
 import TransportBar from './components/TransportBar'
 
@@ -16,7 +17,7 @@ class App extends React.Component {
     super()
 
     this.state={
-      instruments: ['Mixer','Polysynth'],
+      instruments: ['Mixer','PolySynth'],
       toneInstruments: []
     }
 
@@ -32,6 +33,7 @@ class App extends React.Component {
     this.startSequencer = this.startSequencer.bind(this)
     this.stopSequencer = this.stopSequencer.bind(this)
     this.addPolySynth = this.addPolySynth.bind(this)
+    this.addDrumMachine = this.addDrumMachine.bind(this)
     this.removeSynth = this.removeSynth.bind(this)
 
     // Tone.Transport.loop = true
@@ -59,8 +61,12 @@ class App extends React.Component {
     const instruments = [...this.state.instruments, 'Monosynth']
     this.setState({instruments})
   }
+  addDrumMachine(){
+    const instruments = [...this.state.instruments, 'DrumMachine']
+    this.setState({instruments})
+  }
   addPolySynth(){
-    const instruments = [...this.state.instruments, 'Polysynth']
+    const instruments = [...this.state.instruments, 'PolySynth']
     this.setState({instruments})
   }
   attachSynth(synth, i){
@@ -82,10 +88,11 @@ class App extends React.Component {
     tracks.forEach(track=>track.classList.remove('active'))
     e.currentTarget.classList.add('active')
     this.state.toneInstruments.forEach(inst => inst.hide())
+    console.log('show', this)
     this.state.toneInstruments[i].show()
   }
   buildTrack(inst, i) {
-    return <div key={i} className='track' onClick={(e)=>this.showSynth(i, e)}>{inst}</div>
+    return <div key={i} className={`track ${i===0?'active':''}`} onClick={(e)=>this.showSynth(i, e)}>{inst}</div>
   }
   buildInstrument(inst, i){
     switch(inst){
@@ -105,10 +112,20 @@ class App extends React.Component {
       //     attachSynth={this.attachSynth}
       //   />
 
-      case 'Polysynth':
-        return <Polysynth
+      case 'PolySynth':
+        return <Instrument
           key={i}
           id={i}
+          type="PolySynth"
+          toneInstruments={this.state.toneInstruments}
+          attachSynth={this.attachSynth}
+        />
+
+      case 'DrumMachine':
+        return <Instrument
+          key={i}
+          id={i}
+          type="DrumMachine"
           toneInstruments={this.state.toneInstruments}
           attachSynth={this.attachSynth}
         />
@@ -127,32 +144,13 @@ class App extends React.Component {
     const startSequencer = this.startSequencer
     const stopSequencer = this.stopSequencer
     const addSynth = this.addSynth
+    const addDrumMachine = this.addDrumMachine
     const addPolySynth = this.addPolySynth
     const removeSynth = this.removeSynth
-    const transportControls = {startSequencer, stopSequencer, addSynth, addPolySynth, removeSynth}
+    const transportControls = {startSequencer, stopSequencer, addSynth, addDrumMachine, addPolySynth, removeSynth}
     return (
       <div className='main'>
         <TransportBar {...transportControls} />
-        {/*
-          <div className='transport-bar'>
-          <div className='left'>
-
-          </div>
-          <div className='center'>
-            <button onClick={()=>this.startSequencer()}>PLAY</button>
-            <button onClick={()=>this.stopSequencer()}>STOP</button>
-
-          </div>
-          <div className='right'>
-            <button onClick={()=>this.addSynth()}>Add Mono</button>
-            <button onClick={()=>this.addPolySynth()}>Add Poly</button>
-            <button onClick={()=>this.removeSynth()}>REMOVE</button>
-
-          </div>
-          */}
-          {/*<button onClick={()=>this.showMixer()}>Mixer</button>
-            <button onClick={()=>this.showRack()}>Rack</button>*/}
-        {/*</div>*/}
         <div className='work-space'>
           <div className='side-panel'>
             {this.state.instruments.map( (inst,i) => this.buildTrack(inst, i))}
